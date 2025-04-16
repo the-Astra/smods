@@ -21,7 +21,7 @@ function loadAPIs()
 
     function SMODS.GameObject:__call(o)
         o = o or {}
-        assert(o.mod == nil)
+        assert(o.mod == nil, "Assertion failed: Created object should not have \"mod\" field defined.")
         o.mod = SMODS.current_mod
         o.original_mod = o.mod
         setmetatable(o, self)
@@ -2943,7 +2943,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         -- Future work: use ranks() and suits() for better control
         register = function(self)
             self.config = self.config or {}
-            assert(not (self.no_suit and self.any_suit))
+            assert(not (self.no_suit and self.any_suit), "Assertion failed: cannot have both \"no_suit\" and \"any_suit\" defined in a SMODS.Enhancement object.")
             if self.no_rank then self.overrides_base_rank = true end
             SMODS.Enhancement.super.register(self)
         end,

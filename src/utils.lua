@@ -442,7 +442,7 @@ function SMODS.create_mod_badges(obj, badges)
         badges.mod_set[obj.mod.id] = true
         if obj.dependencies then
             for _, v in ipairs(obj.dependencies) do
-                local m = assert(SMODS.find_mod(v)[1])
+                local m = assert(SMODS.find_mod(v)[1], ("Assertion failed: could not find mod \"%s\"."):format(v))
                 if not badges.mod_set[m.id] then
                     table.insert(mods, m)
                     badges.mod_set[m.id] = true
@@ -654,7 +654,7 @@ function SMODS.merge_lists(...)
     local ret = {}
     local seen = {}
     for _, li in ipairs(t) do
-        assert(type(li) == 'table')
+        assert(type(li) == 'table', ("Assertion failed: \"%s\" is not a table."):format(tostring(li)))
         for _, v in ipairs(li) do
             if not seen[v] then
                 ret[#ret+1] = v
@@ -700,10 +700,10 @@ function SMODS.poll_seal(args)
         if v ~= "UNAVAILABLE" then
             local seal_option = {}
             if type(v) == 'string' then
-                assert(G.P_SEALS[v])
+                assert(G.P_SEALS[v], ("Assertion failed: could not find seal \"%s\"."):format(v))
                 seal_option = { key = v, weight = G.P_SEALS[v].weight or 5 } -- default weight set to 5 to replicate base game weighting
             elseif type(v) == 'table' then
-                assert(G.P_SEALS[v.key])
+                assert(G.P_SEALS[v.key], ("Assertion failed: could not find seal \"%s\"."):format(v.key))
                 seal_option = { key = v.key, weight = v.weight }
             end
             if seal_option.weight > 0 then
@@ -849,10 +849,10 @@ function SMODS.poll_enhancement(args)
         if v ~= "UNAVAILABLE" then
             local enhance_option = {}
             if type(v) == 'string' then
-                assert(G.P_CENTERS[v])
+                assert(G.P_CENTERS[v], ("Assertion failed: could not find enhancement \"%s\"."):format(v))
                 enhance_option = { key = v, weight = G.P_CENTERS[v].weight or 5 } -- default weight set to 5 to replicate base game weighting
             elseif type(v) == 'table' then
-                assert(G.P_CENTERS[v.key])
+                assert(G.P_CENTERS[v.key], ("Assertion failed: could not find enhancement \"%s\"."):format(v.key))
                 enhance_option = { key = v.key, weight = v.weight }
             end
             if enhance_option.weight > 0 then
