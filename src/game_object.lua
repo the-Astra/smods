@@ -26,7 +26,7 @@ function loadAPIs()
         o.original_mod = o.mod
         setmetatable(o, self)
         for _, v in ipairs(o.required_params or {}) do
-            assert(not (o[v] == nil), ('Assertioned failed: Missing required parameter for %s declaration: %s'):format(o.set, v))
+            assert(not (o[v] == nil), ('Missing required parameter for %s declaration: %s'):format(o.set, v))
         end
         if o:check_duplicate_register() then return end
         -- also updates o.prefix_config
