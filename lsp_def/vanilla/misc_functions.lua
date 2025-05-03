@@ -1,7 +1,13 @@
 ---@meta
 
+---@class Color
+---@field [1]? number Red component of the current color
+---@field [2]? number Green component of the current colour
+---@field [3]? number Blue component of the current colour
+---@field [4]? number Opacity component of the current colour
+
 ---@param hex string
----@return table
+---@return Color
 ---Returns HEX color attributed to the string. 
 function HEX(hex) end
 

@@ -6,13 +6,61 @@ Game = {}
 Game.__index = Game
 Game.super = Object
 
+G = Game()
+---@type Color[]
+--- Table of colors. Contains some generic colors.
+G.C = {}
+
+---@type Color[]
+--- Colors used for easing the background elements. 
+G.C.DYN_UI = {}
+
+---@type Color[]
+--- Default suit colors.
+G.C.SO_1 = {}
+
+---@type Color[]
+--- High contrast suit colors.
+G.C.SO_2 = {}
+
+---@type Color[]
+--- Suit colors. Set to either `G.C.SO_1` or `G.C.SO_2` based on if "High Contrast Cards" is enabled.
+G.C.SUITS = {}
+
+---@type Color[]
+--- Main UI colors.
+G.C.UI = {}
+
+---@type Color[]
+--- Main Card set colors. 
+G.C.SET = {}
+
+---@type Color[]
+--- Secondary Card set colors.
+G.C.SECONDARY_SET = {}
+
+---@type Color[]
+--- Rarity colors.
+G.C.RARITY = {}
+
+---@type Color[]
+--- Blind colors.
+G.C.BLIND = {}
+
+---@type Color[]
+--- Hand Level colors.
+G.C.HAND_LEVELS = {}
+
+---@type Color[]
+--- Colors used for the swirl background and particles default.
+G.C.BACKGROUND = {}
+
 ---@param self Game
 ---@return Game
 function Game:__call() end
 
 ---@param self Game
 function Game:init() end
-G = Game()
 
 ---@param self Game
 --- Sets Game globals and settings.
