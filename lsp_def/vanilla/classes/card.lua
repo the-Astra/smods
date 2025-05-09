@@ -252,7 +252,7 @@ function Card:open() end
 --- Redeems this Voucher.
 function Card:redeem() end
 
----@param self Card
+---@param self Card? A card will automatically be created to save if called without `self` provided.
 ---@param center? table
 --- Applies the Voucher to this run.
 function Card:apply_to_run(center) end
@@ -297,10 +297,27 @@ function Card:calculate_rental() end
 function Card:calculate_perishable() end
 
 ---@param self Card|table
+---@param sticker string Key to the sticker to apply. 
+---@param bypass_check? boolean Whether the sticker's `should_apply` function is called. 
+--- Adds the sticker onto the card. 
+function Card:add_sticker(sticker, bypass_check) end
+
+---@param self Card|table
+---@param sticker string Key to the sticker to remove. 
+--- Removes the sticker from the card, if it has the sticker. 
+function Card:remove_sticker(sticker) end
+
+---@param self Card|table
+---@param key string Key of the sticker
+---@return table?
+--- Calculates the sticker on the Card. 
+function Card:calculate_sticker(context, key) end
+
+---@param self Card|table
 ---@param context CalcContext|table
 ---@return table? effect
 ---@return boolean? # Return `true` if the Joker was calculated but no effect was provided. 
---- Calculates Jokers. 
+--- Calculates the Card. 
 function Card:calculate_joker(context) end
 
 ---@param self Card

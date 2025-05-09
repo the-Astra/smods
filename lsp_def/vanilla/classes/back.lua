@@ -50,6 +50,11 @@ function Back:trigger_effect(args) end
 function Back:apply_to_run() end
 
 ---@param self Back
+---@param context CalcContext
+--- Wrapper over `Back:trigger_effect`. 
+function Back:calculate(context) end
+
+---@param self Back
 ---@param backTable table
 --- Loads the Back.
 function Back:load(backTable) end

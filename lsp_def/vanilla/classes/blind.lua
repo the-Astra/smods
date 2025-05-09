@@ -128,6 +128,11 @@ function Blind:stay_flipped(to_area, card, from_area) end
 function Blind:debuff_card(card, from_blind) end
 
 ---@param self Blind
+---@param context CalcContext
+--- Calculates the Blind. 
+function Blind:calculate(context) end
+
+---@param self Blind
 ---@param dt number
 --- Moves the Blind.
 function Blind:move(dt) end
