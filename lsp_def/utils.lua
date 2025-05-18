@@ -561,3 +561,7 @@ function SMODS.localize_box(lines, args) end
 ---@return table multi_boxes
 --- Returns all description boxes within `multi_box`.
 function SMODS.get_multi_boxes(multi_box) end
+
+---@param cards Card|Card[]
+--- Destroys the cards passed to the function, handling calculation events that need to happen
+function SMODS.destroy_cards(cards) end

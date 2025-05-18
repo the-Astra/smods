@@ -918,8 +918,8 @@ function Card:calculate_sticker(context, key)
     end
 end
 
-function Card:can_calculate(ignore_debuff)
-    local is_available = (not self.debuff or ignore_debuff) and not self.getting_sliced
+function Card:can_calculate(ignore_debuff, ignore_sliced)
+    local is_available = (not self.debuff or ignore_debuff) and (not self.getting_sliced or ignore_sliced)
     -- TARGET : Add extra conditions here
     return is_available
 end
@@ -1860,7 +1860,7 @@ function SMODS.calculate_destroying_cards(context, cards_destroyed, scoring_hand
         local destroyed = nil
         --un-highlight all cards
         local in_scoring = scoring_hand and SMODS.in_scoring(card, context.scoring_hand)
-        if scoring_hand and in_scoring then 
+        if scoring_hand and in_scoring and not card.destroyed then 
             -- Use index of card in scoring hand to determine pitch
             local m = 1
             for j, _card in pairs(scoring_hand) do
@@ -1886,10 +1886,11 @@ function SMODS.calculate_destroying_cards(context, cards_destroyed, scoring_hand
         -- TARGET: card destroyed
 
         if destroyed then
+            card.getting_sliced = true
             if SMODS.shatters(card) then
                 card.shattered = true
             else
-                card.destroyed = flags.remove
+                card.destroyed = true
             end
             cards_destroyed[#cards_destroyed+1] = card
         end
@@ -2304,4 +2305,42 @@ function SMODS.get_multi_boxes(multi_box)
         end
     end
     return multi_boxes
+end
+
+function SMODS.destroy_cards(cards)
+    if not cards[1] then
+        cards = {cards}
+    end
+    local glass_shattered = {}
+    local playing_cards = {}
+    for _, card in ipairs(cards) do
+        card.getting_sliced = true
+        if SMODS.shatters(card) then
+            card.shattered = true
+            glass_shattered[#glass_shattered+1] = card
+        else
+            card.destroyed = true
+        end
+        if card.base.name then
+            playing_cards[#playing_cards+1] = card
+        end
+    end
+    
+    check_for_unlock{type = 'shatter', shattered = glass_shattered}
+    
+    if next(playing_cards) then SMODS.calculate_context({scoring_hand = cards, remove_playing_cards = true, removed = playing_cards}) end
+
+    for i=1, #cards do
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                if cards[i].shattered then
+                    cards[i]:shatter()
+                else
+                    cards[i]:start_dissolve()
+                end
+                return true
+            end
+        }))
+    end
+
 end

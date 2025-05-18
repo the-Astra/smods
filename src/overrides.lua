@@ -1468,33 +1468,37 @@ function Card:set_edition(edition, immediate, silent, delay)
 		self.ignore_shadow[self.edition.key] = true
 	end
 
-	local on_edition_applied = p_edition.on_apply
-	if type(on_edition_applied) == "function" then
-		on_edition_applied(self)
-	end
-
 	for k, v in pairs(p_edition.config) do
 		if type(v) == 'table' then
 			self.edition[k] = copy_table(v)
 		else
 			self.edition[k] = v
 		end
-		if k == 'card_limit' and (self.added_to_deck or self.joker_added_to_deck_but_debuffed or (self.area == G.hand and not self.debuff)) and G.jokers and G.consumeables then
+	end
+
+	local on_edition_applied = p_edition.on_apply
+	if type(on_edition_applied) == "function" then
+		on_edition_applied(self)
+	end
+
+
+	if self.edition.card_limit then
+		if (self.added_to_deck or self.joker_added_to_deck_but_debuffed or (self.area == G.hand and not self.debuff)) and G.jokers and G.consumeables then
 			if self.ability.consumeable then
-				G.consumeables.config.card_limit = G.consumeables.config.card_limit + v
+				G.consumeables.config.card_limit = G.consumeables.config.card_limit + self.edition.card_limit
 			elseif self.ability.set == 'Joker' then
-				G.jokers.config.card_limit = G.jokers.config.card_limit + v
+				G.jokers.config.card_limit = G.jokers.config.card_limit + self.edition.card_limit
 			elseif self.area == G.hand then
 				local is_in_pack = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.STATE == G.STATES.SMODS_BOOSTER_OPENED and SMODS.OPENED_BOOSTER.config.center.draw_hand))
 				G.E_MANAGER:add_event(Event({
 					trigger = 'immediate',
 					func = function()
 						if G.hand.config.real_card_limit then
-							G.hand.config.real_card_limit = G.hand.config.real_card_limit + v
+							G.hand.config.real_card_limit = G.hand.config.real_card_limit + self.edition.card_limit
 						end
-						G.hand.config.card_limit = G.hand.config.card_limit + v
+						G.hand.config.card_limit = G.hand.config.card_limit + self.edition.card_limit
 						if not is_in_pack and G.GAME.blind.in_blind then
-							G.FUNCS.draw_from_deck_to_hand(v)
+							G.FUNCS.draw_from_deck_to_hand(self.edition.card_limit)
 						end
 						return true
 					end
