@@ -1432,7 +1432,6 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         end,
         create_UIBox = function(self)
             local _size = math.max(1, SMODS.OPENED_BOOSTER.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
-            print('open pack')
             G.pack_cards = CardArea(
                 G.ROOM.T.x + 9 + G.hand.T.x, G.hand.T.y,
                 math.max(1,math.min(_size,5))*G.CARD_W*1.1,
@@ -3253,7 +3252,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
 	        return { edition = copy_table(self.config), fake_card = true }
         end,
         card_limit_key = function(self, card)
-            local area = card.area.config
+            local area = (card.area or {}).config or {}
             if area.negative_info then
                 if type(area.negative_info) == 'string' then
                     return self.card_limit_keys[area.negative_info]
