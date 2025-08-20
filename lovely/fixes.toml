@@ -217,6 +217,13 @@ self.ability.extra_value = self.ability.extra_value or 0
 for k, v in pairs(new_ability) do
     self.ability[k] = v
 end
+
+-- handles card_limit/extra_slots_used changes
+self.ability.card_limit = self.ability.card_limit + (center.config.card_limit or 0)
+self.ability.extra_slots_used = self.ability.extra_slots_used + (center.config.extra_slots_used or 0)
+if self.area then self.area:handle_card_limit(center.config.card_limit, center.config.extra_slots_used) end
+
+
 -- reset keys do not persist on ability change
 local reset_keys = {'name', 'effect', 'set', 'extra', 'played_this_ante', 'perma_debuff'}
 for _, mod in ipairs(SMODS.mod_list) do

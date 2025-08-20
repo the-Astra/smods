@@ -2222,7 +2222,7 @@ end
 G.FUNCS.can_select_from_booster = function(e)
     local card = e.config.ref_table
     local area = booster_obj and card:selectable_from_pack(booster_obj)
-    local edition_card_limit = card.edition and card.edition.card_limit or 0
+    local edition_card_limit = card.ability.card_limit
     if area and #G[area].cards < G[area].config.card_limit + edition_card_limit then
         e.config.colour = G.C.GREEN
         e.config.button = 'use_card'
@@ -2989,4 +2989,37 @@ function UIElement:draw_pixellated_under(_type, _parallax, _emboss, _progress)
     end
     love.graphics.polygon("fill", self.pixellated_rect.fill.vertices)
 
+end
+
+function CardArea:count_extra_slots_used(cards)
+    local slots = #cards
+    if (self.config.type == 'joker' or self.config.type == 'hand') and not self.config.fixed_limit then
+        for _, card in ipairs(cards) do
+            slots = slots + card.ability.extra_slots_used
+        end
+    end
+    return slots
+end
+
+function CardArea:handle_card_limit(card_limit, card_slots)
+    if (self.config.type == 'joker' or self.config.type == 'hand') and not self.config.fixed_limit then
+        card_limit = card_limit or 0
+        card_slots = card_slots or 0
+        G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = function()
+                if card_limit then
+                    self.config.card_limit = self.config.card_limit + card_limit
+                    self.config.true_card_limit = math.max(0, self.config.true_card_limit + card_limit)
+                end
+                if card_slots then
+                    self.config.card_limit = self.config.card_limit - card_slots
+                end
+                return true
+            end
+        }))
+        if G.hand and self == G.hand and card_limit - card_slots > 0 then 
+            G.FUNCS.draw_from_deck_to_hand(math.min(card_limit - card_slots, (self.config.card_limit + card_limit - card_slots) - #self.cards))
+        end
+    end
 end
