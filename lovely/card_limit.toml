@@ -32,6 +32,20 @@ function CardArea:emplace(card, location, stay_flipped)
 payload = '''
     self:handle_card_limit(card.ability.card_limit, card.ability.extra_slots_used)
 '''
+# CardArea:update()
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+match_indent = true
+position = 'at'
+pattern = '''
+if self == G.deck and self.config.card_limit > #G.playing_cards then self.config.card_limit = #G.playing_cards end
+'''
+payload = '''
+if self == G.deck and (self.config.card_limit ~= #G.playing_cards or self.config.true_card_limit ~= #G.playing_cards) then self.config.card_limit = #G.playing_cards; self.config.true_card_limit = #G.playing_cards end
+'''
+
+
 
 # CardArea:remove_card()
 [[patches]]
