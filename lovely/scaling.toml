@@ -473,7 +473,7 @@ SMODS.scale_card(self, {
     ref_table = self.ability,
     ref_value = "x_mult",
     scalar_value = "extra",
-    message_key = 'a_xmult'.
+    message_key = 'a_xmult',
     operation = function(ref_table, ref_value, initial, scaling)
         ref_table[ref_value] = initial + scaling*#context.cards
     end
