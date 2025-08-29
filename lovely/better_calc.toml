@@ -2018,14 +2018,17 @@ draw_card(G.play,discard_to, it*100/play_count,'down', false, v, nil, nil, flags
 target = 'functions/state_events.lua'
 match_indent = true
 pattern = '''
+    draw_card(G.deck,G.hand, i*100/hand_space,'up', true, cards_to_draw[i])
 else
     draw_card(G.deck,G.hand, i*100/hand_space,'up', true, cards_to_draw[i])
 end
 '''
 position = 'at'
 payload = '''
+    local flags = SMODS.calculate_context({draw_individual = true, card = cards_to_draw[i], num_drawn = i, to_booster = true})
+    draw_card(G.deck,G.hand, i*100/hand_space,'up', true, cards_to_draw[i], nil, nil, flags.stay_flipped)
 else
-    local flags = SMODS.calculate_context({draw_individual = true, card = cards_to_draw[i], num_drawn = i, played = true})
+    local flags = SMODS.calculate_context({draw_individual = true, card = cards_to_draw[i], num_drawn = i, to_booster = false})
     local draw_to = G[flags.cardarea] or G.hand
     draw_card(G.deck,draw_to, i*100/hand_space,'up', true, cards_to_draw[i], nil, nil, flags.stay_flipped)
 end
