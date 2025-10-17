@@ -3122,7 +3122,7 @@ function SMODS.card_select_area(card, pack)
         else
             select_area = card.config.center.select_card
         end
-    elseif SMODS.ConsumableTypes[card.ability.set].select_card then -- ConsumableType is second priority
+    elseif SMODS.ConsumableTypes[card.ability.set] and SMODS.ConsumableTypes[card.ability.set].select_card then -- ConsumableType is second priority
         if type(SMODS.ConsumableTypes[card.ability.set].select_card) == "function" then
             select_area = SMODS.ConsumableTypes[card.ability.set]:select_card(card, pack)
         else
@@ -3146,7 +3146,7 @@ function SMODS.get_select_text(card, pack)
         else
             select_text = localize(card.config.center.select_button_text)
         end
-    elseif SMODS.ConsumableTypes[card.ability.set].select_button_text then -- ConsumableType is second priority
+    elseif SMODS.ConsumableTypes[card.ability.set] and SMODS.ConsumableTypes[card.ability.set].select_button_text then -- ConsumableType is second priority
         if type(SMODS.ConsumableTypes[card.ability.set].select_button_text) == "function" then
             select_text = SMODS.ConsumableTypes[card.ability.set]:select_button_text(card, pack)
         else
