@@ -3195,7 +3195,7 @@ function SMODS.should_handle_limit(area)
 end
 
 function CardArea:handle_card_limit()
-    if SMODS.should_handle_limit(self) then
+    if SMODS.should_handle_limit(self) and not G.TAROT_INTERRUPT then
         self.config.card_limits.extra_slots = self:count_property('card_limit')
         self.config.card_limits.total_slots = self.config.card_limits.extra_slots + (self.config.card_limits.base or 0) + (self.config.card_limits.mod or 0)
         self.config.card_limits.extra_slots_used = self:count_property('extra_slots_used')
@@ -3306,7 +3306,9 @@ function SMODS.upgrade_poker_hands(args)
         end
     end
         
+    local displayed = false
     for _, hand in ipairs(args.hands) do
+        displayed = hand == SMODS.displayed_hand
         if not instant then
             update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(hand, 'poker_hands'), level=G.GAME.hands[hand].level})
             for name, p in pairs(SMODS.Scoring_Parameters) do
@@ -3339,7 +3341,7 @@ function SMODS.upgrade_poker_hands(args)
         if not instant then delay(1.3) end
     end
 
-    if not instant then
+    if not instant and not displayed then
         update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, vals_after_level or {mult = 0, chips = 0, handname = '', level = ''})
     end
 end
