@@ -2001,3 +2001,30 @@ if ret then
     return ret
 end
 '''
+
+# Add modify_final_cashout
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''
+    dollars = dollars + G.GAME.interest_amount*math.min(math.floor(G.GAME.dollars/5), G.GAME.interest_cap/5)
+end
+'''
+position = "after"
+payload = '''
+
+    for _, area in ipairs(SMODS.get_card_areas('jokers')) do
+            for _, _card in ipairs(area.cards) do
+            local ret = _card:modify_final_cashout(dollars)
+    
+            -- TARGET: calc_dollar_bonus per card
+            if ret then
+                i = i+1
+                add_round_eval_row({dollars = ret, bonus = true, name='joker'..i, pitch = pitch, card = _card})
+                pitch = pitch + 0.06
+                dollars = dollars + ret
+            end
+        end
+    end
+'''
+match_indent = false
