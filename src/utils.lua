@@ -2089,6 +2089,15 @@ function SMODS.calculate_destroying_cards(context, cards_destroyed, scoring_hand
             cards_destroyed[#cards_destroyed+1] = card
         end
     end
+	--cull destroyed cards from last_hand
+	if SMODS.last_hand then	
+		local scoring = {}
+		local full = {}
+		for i, v in pairs(SMODS.last_hand.scoring_hand or {}) do if not v.getting_sliced then scoring[#scoring+1] = v end end
+		for i, v in pairs(SMODS.last_hand.full_hand or {}) do if not v.getting_sliced then full[#full+1] = v end end
+		SMODS.last_hand.scoring_hand = scoring
+		SMODS.last_hand.full_hand = full
+	end
 end
 
 function SMODS.blueprint_effect(copier, copied_card, context)
@@ -3428,4 +3437,25 @@ function SMODS.get_clean_pool(_type, _rarity, _legendary, _append)
         end
     end
     return clean_pool
+end
+
+local smods_hook_save_run = save_run
+function save_run()
+    if SMODS.last_hand then
+        for _, v in ipairs({'scoring_hand','full_hand'}) do
+            for i, card in ipairs(SMODS.last_hand[v]) do
+                card.ability['SMODS_'..v] = i
+            end
+        end
+    end
+    smods_hook_save_run()
+    if SMODS.last_hand then
+        G.culled_table.SMODS = {
+        last_hand = {
+                scoring_name = SMODS.last_hand.scoring_name,
+                scoring_hand = {},
+                full_hand = {}
+            }
+        }
+    end
 end
