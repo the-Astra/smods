@@ -2024,7 +2024,6 @@ payload = '''
 if saveTable then
     if saveTable.SMODS then
         SMODS.last_hand = {scoring_hand = {}, full_hand = {}, scoring_name = saveTable.SMODS.last_hand.scoring_name}
-        print(#G.playing_cards)
         for _, v in ipairs({'scoring_hand','full_hand'}) do
             for _, card in ipairs(G.playing_cards) do
                 if card.ability['SMODS_'..v] then
