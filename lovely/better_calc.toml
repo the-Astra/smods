@@ -43,7 +43,9 @@ function eval_card(card, context)
         end
         return {}, {}
     end
-    if context.other_card and context.other_card.can_calculate and not context.other_card:can_calculate(context.ignore_other_debuff or context.ignore_debuff) then return {}, {} end
+	local vanilla_debuff_handling
+    for _, key in ipairs(SMODS.custom_debuff_handling) do if card.config.center_key == key then vanilla_debuff_handling = true; break end end
+    if context.other_card and context.other_card.can_calculate and not context.other_card:can_calculate(context.ignore_other_debuff or context.ignore_debuff) and not vanilla_debuff_handling then return {}, {} end
     local ret = {}
 '''
 
@@ -2034,3 +2036,4 @@ if saveTable then
 	end
 end
 '''
+
