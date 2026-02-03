@@ -968,7 +968,7 @@ function buildModtag(mod)
     local tag_atlas, tag_pos, tag_message, specific_vars = getModtagInfo(mod)
 
     local tag_sprite_tab = nil
-    local units = SMODS.pixels_to_unit(34) * 2
+    local units = 1.1
     local tag_sprite = SMODS.create_sprite(0, 0, 0.8*1, 0.8*1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
     tag_sprite.T.scale = 1
     tag_sprite_tab = {n= G.UIT.C, config={align = "cm", padding = 0}, nodes={
