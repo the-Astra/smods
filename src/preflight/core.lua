@@ -84,7 +84,6 @@ local function handleConflicts()
     for k, mod in pairs(SMODS.Mods) do
         if not (mod.lovely_only or mod.meta or mod.disabled) and not mod.can_load then
             if mod.lovely then has_lovely = true end
-            mod.disabled = true
             table.insert(conflicted, mod.blacklist_name)
         end
     end
