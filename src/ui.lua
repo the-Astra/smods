@@ -1173,13 +1173,8 @@ local function createClickableModBox(modInfo, scale)
                                     callback = (
                                         function(_set_toggle)
                                             if not modInfo.should_enable then
-                                                if modInfo.load_type == "directory" then
-                                                    NFS.write(SMODS.MODS_DIR.. "/" .. modInfo.blacklist_name ..'/.lovelyignore', '')
-                                                    modInfo.lovelyIgnored = true
-                                                else
-                                                    require"SMODS.preflight.loader".addToBlacklist(modInfo.blacklist_name)
-                                                    modInfo.blacklisted = true
-                                                end
+                                                require"SMODS.preflight.loader".addToBlacklist(modInfo.blacklist_name)
+                                                modInfo.blacklisted = true
                                             else
                                                 if modInfo.lovelyIgnored then
                                                     NFS.remove(SMODS.MODS_DIR.. "/" .. modInfo.blacklist_name ..'/.lovelyignore')
