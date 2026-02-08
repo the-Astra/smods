@@ -171,9 +171,10 @@ local _, _, flags = love.window.getMode()
 local width, height = love.window.getDesktopDimensions(flags.display)
 -- local width, height = 1280, 720
 
-love.window.updateMode(width * 0.8, height * 0.8, {
-    resizable = true,
-})
+-- TODO: When restoring me, make sure the game doesn't make it smaller
+-- love.window.updateMode(width * 0.8, height * 0.8, {
+--     resizable = true,
+-- })
 
 -- We don't want the first frame's dt to include time taken by love.load.
 -- TODO: Properly hook this up
