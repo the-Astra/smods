@@ -799,13 +799,11 @@ end
 local function doGameHooks()
     local init_item_prototypes_ref = Game.init_item_prototypes
     function Game:init_item_prototypes()
-        print"LMAO"
         init_item_prototypes_ref(self)
         convert_save_data()
         if SMODS.booted then
             SMODS.injectItems()
         end
-        SMODS.booted = true
     end
 
     -- TODO: vanilla hook
@@ -819,6 +817,7 @@ local function initSteamodded()
     initializeModUIFunctions()
     -- boot_print_stage("Injecting Items")
     SMODS.injectItems()
+    SMODS.booted = true
 
     -- re-inject on reload
 end
