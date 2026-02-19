@@ -227,7 +227,7 @@ function SMODS.load_mod_localization(path, mod_id, depth)
     handle_loc_file(dir, G.SETTINGS.language, true, mod_id)
     if G.SETTINGS.real_language then handle_loc_file(dir, G.SETTINGS.real_language, true, mod_id) end
     if depth >= 4 then return end
-    for _,v in ipairs(SMODS.NFS.getDirectoryItems(path)) do
+    for _,v in ipairs(SMODS.NFS.getDirectoryItems(dir)) do
         local new_path = dir .. v
         local file_type = SMODS.NFS.getInfo(new_path).type
         if file_type == 'directory' or file_type == 'symlink' then
