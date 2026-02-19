@@ -400,7 +400,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         set = '[INTERNAL]',
         register = function() error('INTERNAL CLASS, DO NOT CALL') end,
         pre_inject_class = function()
-            SMODS.handle_loc_file(SMODS.path, '_')
+            SMODS.load_mod_localization(SMODS.path, '_')
             if SMODS.dump_loc then SMODS.dump_loc.pre_inject = copy_table(G.localization) end
             for _, mod in ipairs(SMODS.mod_list) do
                 if mod.process_loc_text and type(mod.process_loc_text) == 'function' then
@@ -3910,7 +3910,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pre_inject_class = function()
             for _, mod in ipairs(SMODS.mod_list) do
                 if mod.can_load and not mod.lovely_only then
-                    SMODS.handle_loc_file(mod.path, mod.id)
+                    SMODS.load_mod_localization(mod.path, mod.id)
                 end
             end
         end

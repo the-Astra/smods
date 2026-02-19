@@ -340,8 +340,15 @@ function SMODS.SAVE_UNLOCKS() end
 function SMODS.process_loc_text(ref_table, ref_value, loc_txt, key) end
 
 ---@param path string
+--- This method is deprecated. Use SMODS.load_mod_localization instead.
 --- Handles injecting localization files.
-function SMODS.handle_loc_file(path) end
+function SMODS.handle_loc_file(path, mod_id) end
+
+---@param path string The top level path of the mod that localization should be loaded from.
+---@param mod_id string The ID of the mod localization strings are being loaded for.
+---@param depth number Recursive calling depth. This function is called recursively to load localization files located in subfolders of a mod's localization folder up to four folders deep.
+--- Handles injecting a mod's localization files.
+function SMODS.load_mod_localization(path, mod_id, depth) end
 
 ---@param pool table[]
 ---@param center metatable

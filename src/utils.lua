@@ -219,13 +219,24 @@ local function handle_loc_file(dir, language, force, mod_id)
     end
 end
 
-function SMODS.handle_loc_file(path, mod_id)
-    local dir = path .. 'localization/'
+function SMODS.load_mod_localization(path, mod_id, depth)
+    local dir = path .. (depth and '' or 'localization/')
+    depth = (depth or 0) + 1
     handle_loc_file(dir, 'en-us', true, mod_id)
     handle_loc_file(dir, 'default', true, mod_id)
     handle_loc_file(dir, G.SETTINGS.language, true, mod_id)
     if G.SETTINGS.real_language then handle_loc_file(dir, G.SETTINGS.real_language, true, mod_id) end
+    if depth >= 4 then return end
+    for _,v in ipairs(SMODS.NFS.getDirectoryItems(path)) do
+        local new_path = dir .. v
+        local file_type = SMODS.NFS.getInfo(new_path).type
+        if file_type == 'directory' or file_type == 'symlink' then
+            SMODS.load_mod_localization(new_path..'/', mod_id, depth)
+        end
+    end
 end
+-- deprecated, old identifier kept for compatibility
+SMODS.handle_loc_file = SMODS.load_mod_localization
 
 function SMODS.insert_pool(pool, center, replace)
     assert(pool, ("Attempted to insert object \"%s\" into an empty pool."):format(center.key or "UNKNOWN"))
