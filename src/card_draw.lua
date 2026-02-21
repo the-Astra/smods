@@ -49,9 +49,12 @@ function SMODS.clean_up_canvas_text(t)
 end
 
 function SMODS.clean_up_children(t)
-	for k, v in pairs(t) do
-		if type(v) == 'table' and v.remove then v:remove() end
-		t[k] = nil
+	local ignore = {center = true, shadow = true, back = true}
+    for k, v in pairs(t) do
+        if not ignore[k] then
+            if type(v) == 'table' and v.remove then v:remove() end
+            t[k] = nil
+        end
 	end
 end
 
