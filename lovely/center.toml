@@ -637,3 +637,17 @@ else
     G.GAME.consumeable_usage_total[card.config.center.set:lower()] = G.GAME.consumeable_usage_total[card.config.center.set:lower()] + 1
 '''
 match_indent = true
+
+# Card:remove()
+# Clean up canvas_text when cards are removed
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+match_indent = true
+position = 'before'
+pattern = '''
+remove_all(self.children)
+'''
+payload = '''
+if self.canvas_text then SMODS.clean_up_canvas_text(self) end
+'''

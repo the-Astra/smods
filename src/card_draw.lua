@@ -38,6 +38,23 @@ function SMODS.CanvasSprite:draw_from(other_obj, ms, mr, mx, my)
     love.graphics.pop()
 end
 
+function SMODS.clean_up_canvas_text(t)
+	if t.canvas_text[1] then
+		SMODS.clean_up_children(t.canvas_text)
+		t.canvas_text = nil
+		return
+	end
+	t.canvas_text:remove()
+	t.canvas_text = nil
+end
+
+function SMODS.clean_up_children(t)
+	for k, v in pairs(t) do
+		if type(v) == 'table' and v.remove then v:remove() end
+		t[k] = nil
+	end
+end
+
 SMODS.DrawSteps = {}
 SMODS.DrawStep = SMODS.GameObject:extend {
     obj_table = SMODS.DrawSteps,
