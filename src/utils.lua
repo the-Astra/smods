@@ -375,7 +375,7 @@ function SMODS.create_card(t)
     if not t.area and t.key and G.P_CENTERS[t.key] then
         t.area = G.P_CENTERS[t.key].consumeable and G.consumeables or G.P_CENTERS[t.key].set == 'Joker' and G.jokers
     end
-    if not t.area and not t.key and t.set and SMODS.ConsumableTypes[t.set] or t.set == 'Consumeables' then
+    if not t.area and not t.key and t.set and (SMODS.ConsumableTypes[t.set] or t.set == 'Consumeables') then
         t.area = G.consumeables
     end
     if not t.key and t.set == 'Playing Card' or t.set == 'Base' or t.set == 'Enhanced' or (not t.set and (t.front or t.rank or t.suit)) then
