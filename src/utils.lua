@@ -3255,17 +3255,10 @@ function SMODS.upgrade_poker_hands(args)
     -- args.from
     -- args.StatusText
 
-    local function get_keys(t)
-        local keys = {}
-        for k, _ in pairs(t) do
-            table.insert(keys, k)
-        end
-        return keys
-    end
 
-    args.hands = args.hands or get_keys(G.GAME.hands)
+    args.hands = args.hands or G.handlist
     if type(args.hands) == 'string' then args.hands = {args.hands} end
-    args.parameters = args.parameters or get_keys(SMODS.Scoring_Parameters)
+    args.parameters = args.parameters or SMODS.Scoring_Parameter.obj_buffer
     local instant = args.instant
 
     if not args.func then
