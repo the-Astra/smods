@@ -1353,13 +1353,40 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         return true
     end
     
-    if key == 'prevent_debuff' or key == 'add_to_hand' or key == 'remove_from_hand' or key == 'stay_flipped' or key == 'prevent_stay_flipped' or key == 'prevent_trigger' then
-        return key
+    local key_return_flags = {
+        'prevent_debuff',
+        'add_to_hand',
+        'remove_from_hand',
+        'stay_flipped',
+        'prevent_stay_flipped',
+        'prevent_trigger'
+    }
+
+    for _, flag in ipairs(key_return_flags) do
+        if key == flag then
+            return key
+        end
     end
 
-    if key == 'remove' or key == 'debuff_text' or key == 'cards_to_draw' or key == 'numerator' or key == 'denominator' or key == 'no_destroy' or
-        key == 'replace_scoring_name' or key == 'replace_display_name' or key == 'replace_poker_hands' or key == 'modify' or key == 'shop_create_flags'  then
-        return { [key] = amount }
+    local amount_return_flags = {
+        'remove',
+        'debuff_text',
+        'cards_to_draw',
+        'numerator',
+        'denominator',
+        'no_destroy',
+        'replace_scoring_name',
+        'replace_display_name',
+        'replace_poker_hands',
+        'modify',
+        'shop_create_flags',
+        'booster_create_flags'
+    }
+
+    for _, flag in ipairs(amount_return_flags) do
+        if key == flag then
+            return { [key] = amount }
+        end
     end
     
     if key == 'debuff' then
@@ -1460,7 +1487,7 @@ SMODS.other_calculation_keys = {
     'modify',
     'no_destroy', 'prevent_trigger',
     'replace_scoring_name', 'replace_display_name', 'replace_poker_hands',
-    'shop_create_flags',
+    'shop_create_flags', 'booster_create_flags',
     'extra',
 }
 SMODS.silent_calculation = {

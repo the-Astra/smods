@@ -111,6 +111,13 @@
 ---@field old? string Key of the old center after a card's ability is set.
 ---@field new? string Key of the new center after a card's ability is set.
 ---@field unchanged? boolean `true` if the key of the old center is the same as the new one after a card's ability is set.
+---@field create_shop_card? true Check if `true` for when the shop is creating a card.
+---@field set? string Set of the card the shop is creating.
+---@field modify_shop_card? true Check if `true` for modifying a card in the shop after its creation.
+---@field create_booster_card? true Check if `true` for when a booster is creating a card.
+---@field modify_booster_card? true Check if `true` for modifying a card in a booster after its creation.
+---@field booster? Card|table Booster object.
+---@field index? integer Index of the card to be created by a booster.
 
 --- Util Functions
 
