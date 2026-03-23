@@ -2049,18 +2049,13 @@ end
 position = "after"
 payload = '''
 
-    for _, area in ipairs(SMODS.get_card_areas('jokers')) do
-        for _, _card in ipairs(area.cards) do
-            local obj = _card.config.center
-            if obj.modify_final_cashout and type(obj.modify_final_cashout) == 'function' then
-                local ret = obj:modify_final_cashout(_card, dollars)
-            
-                -- TARGET: modify_final_cashout per card
-                if ret then
-                    add_round_eval_row({dollars = ret, bonus = true, name='joker'..i, pitch = pitch, card = _card})
-                    i = i+1
-                    pitch = pitch + 0.06
-                    dollars = dollars + ret
+    SMODS.cashout_pitch = pitch; SMODS.cashout_index = i; SMODS.cashout_dollars = dollars
+    SMODS.calculate_context({modify_final_cashout = true, dollars = dollars})
+    dollars = SMODS.cashout_dollars
+    SMODS.cashout_pitch = nil; SMODS.cashout_index = nil; SMODS.cashout_dollars = nil
+'''
+match_indent = false
+
 # Reload SMODS.last_hand
 [[patches]]
 [patches.pattern]
