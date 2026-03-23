@@ -1840,6 +1840,7 @@ function SMODS.update_context_flags(context, flags)
         -- insert general modified value updating here
         if context.modify_ante then context.modify_ante = flags.modify end
         if context.drawing_cards then context.amount = flags.modify end
+        if context.modify_blind_chips then context.blind_chips = flags.modify; SMODS.blind_chips = flags.modify end
     end
 end
 

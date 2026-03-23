@@ -2070,10 +2070,10 @@ local blind_amt = get_blind_amount(G.GAME.round_resets.blind_ante)*blind_choice.
 '''
 position = "after"
 payload = '''
-SMODS.blind_amt = blind_amt
-SMODS.calculate_context({modify_blind_amt = true, blind_multiplier = blind_choice.config.mult})
-blind_amt = SMODS.blind_amt
-SMODS.blind_amt = nil
+SMODS.blind_chips = blind_amt
+SMODS.calculate_context({modify_blind_chips = true, blind_multiplier = blind_choice.config.mult, blind_chips = blind_amt})
+blind_amt = SMODS.blind_chips
+SMODS.blind_chips = nil
 '''
 match_indent = true
 
@@ -2085,9 +2085,9 @@ self.chips = get_blind_amount(G.GAME.round_resets.ante)*self.mult*G.GAME.startin
 '''
 position = "after"
 payload = '''
-SMODS.blind_amt = self.chips
-SMODS.calculate_context({modify_blind_amt = true, blind_multiplier = self.mult})
-self.chips = SMODS.blind_amt
-SMODS.blind_amt = nil
+SMODS.blind_chips = self.chips
+SMODS.calculate_context({modify_blind_chips = true, blind_multiplier = self.mult, blind_chips = self.chips})
+self.chips = SMODS.blind_chips
+SMODS.blind_chips = nil
 '''
 match_indent = true
