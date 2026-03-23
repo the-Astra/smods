@@ -111,6 +111,18 @@
 ---@field old? string Key of the old center after a card's ability is set.
 ---@field new? string Key of the new center after a card's ability is set.
 ---@field unchanged? boolean `true` if the key of the old center is the same as the new one after a card's ability is set.
+---@field create_shop_card? true Check if `true` for when the shop is creating a card.
+---@field set? string Set of the card the shop is creating.
+---@field modify_shop_card? true Check if `true` for modifying a card in the shop after its creation.
+---@field create_booster_card? true Check if `true` for when a booster is creating a card.
+---@field modify_booster_card? true Check if `true` for modifying a card in a booster after its creation.
+---@field booster? Card|table Booster object.
+---@field index? integer Index of the card to be created by a booster.
+---@field poker_hand_changed? boolean `true` if a poker hand's values are being altered.
+---@field old_level? integer Level of the poker hand before the alteration, if it was changed.
+---@field new_level? integer Level of the poker hand after the alteration, if it was changed.
+---@field old_parameters? table<'chips'|'mult'|string, number> Altered scoring parameters of the poker hand before the alteration.
+---@field new_parameters? table<'chips'|'mult'|string, number> Altered scoring parameters of the poker hand after the alteration.
 
 --- Util Functions
 
@@ -340,8 +352,15 @@ function SMODS.SAVE_UNLOCKS() end
 function SMODS.process_loc_text(ref_table, ref_value, loc_txt, key) end
 
 ---@param path string
+--- This method is deprecated. Use SMODS.load_mod_localization instead.
 --- Handles injecting localization files.
-function SMODS.handle_loc_file(path) end
+function SMODS.handle_loc_file(path, mod_id) end
+
+---@param path string The top level path of the mod that localization should be loaded from.
+---@param mod_id string The ID of the mod localization strings are being loaded for.
+---@param depth number Recursive calling depth. This function is called recursively to load localization files located in subfolders of a mod's localization folder up to four folders deep.
+--- Handles injecting a mod's localization files.
+function SMODS.load_mod_localization(path, mod_id, depth) end
 
 ---@param pool table[]
 ---@param center metatable
@@ -519,9 +538,15 @@ function SMODS.debug_calculation() end
 
 ---@param card Card|table
 ---@param pack SMODS.Booster|table
----@return boolean
+---@return boolean|string
 --- Controls if the card should be selectable from a Booster Pack.
 function Card.selectable_from_pack(card, pack) end
+
+---@param card Card|table
+---@param pack SMODS.Booster|table
+---@return string|{[string]: string}
+--- Controls the area a card should be after selection from a Booster Pack.
+function SMODS.card_select_area(card, pack) end
 
 ---@param pool (string|"UNAVAILABLE")[]
 ---@return number
@@ -639,8 +664,9 @@ function SMODS.get_multi_boxes(multi_box) end
 ---@param cards Card|Card[]
 ---@param bypass_eternal boolean?
 ---@param immediate boolean?
+---@param skip_anim boolean?
 --- Destroys the cards passed to the function, handling calculation events that need to happen
-function SMODS.destroy_cards(cards, bypass_eternal, immediate) end
+function SMODS.destroy_cards(cards, bypass_eternal, immediate, skip_anim) end
 
 ---@param hand_space number
 --- Used to draw cards to hand outside of the normal card draw
@@ -692,10 +718,8 @@ function SMODS.is_poker_hand_visible(handname) end
 function SMODS.is_eternal(card, trigger) end
 
 ---@param card Card|table
----@param args? table|{ref_table: table, ref_value: string, scalar_value: string, scalar_table: table?, operation: string?}
----@return table? results
+---@param args? table|{ref_table: table, ref_value: string, scalar_value: string, scalar_table: table?, operation: '+'|'X'|'-'|string|fun(ref_table: table, ref_value: string, initial: number, change: number)?, block_overrides: {value: boolean?, scalar: boolean?, message: boolean?}?, scaling_message: table?, message_key: string?, message_colour: table?, message_delay: number?, no_message: boolean?}
 --- Tells Jokers that this card is scaling allowing for scaling detection
---- Can return scaling_value and scalar_value in results to change the scaling cards values
 --- Args must contain `ref_table`, `ref_value`, and `scalar_value`. It may optionally contain `scalar_table`, used in place of `ref_table` for the `scalar_value`, and `operation` to designate the scaling operation, which defaults to `"+"`
 function SMODS.scale_card(card, args) end
 
@@ -741,15 +765,16 @@ function SMODS.is_getter_context(context) end
 --- skipping the evaluation of the object and preventing an infinite loop.
 function SMODS.check_looping_context(eval_object) end
 
----@param atlas_key string The key of the atlas 
+---@param atlas_key string The key of the atlas
 --- This function gets an atlas from G.ASSET_ATLAS or G.ANIMATION_ATLAS
 function SMODS.get_atlas(atlas_key) end
 
----@param atlas_key string The key of the atlas 
+---@param atlas_key string The key of the atlas
 --- This function returns the Sprite or the AnimatedSprite class depending on the atlas type
 function SMODS.get_atlas_sprite_class(atlas_key) end
 
 ---@param ... any The same parameters as Sprite() takes individually. The atlas may be an atlas_key instead.
+---@return Sprite|AnimatedSprite|table
 --- This function creates a Sprite or AnimatedSprite depending on the atlas passed
 function SMODS.create_sprite(X, Y, W, H, atlas, pos) end
 
@@ -763,9 +788,25 @@ function SMODS.is_active_blind(key, ignore_disabled) end
 ---@return boolean
 function SMODS.challenge_is_unlocked(challenge, k) end
 
----@param args table|{hands?: table, parameters?: table, level_up?: number|boolean, func?: fun(base: number, hand: string, param: string), instant?: boolean}
+---@param args table|{hands?: table, parameters?: table, level_up?: number|boolean, func?: fun(base: number, hand: string, param: string, level_up?: number|boolean), instant?: boolean, StatusText?: boolean|string|table|fun(hand: string, parameter: string)}
 --- This functions handles upgrading poker hands in more complex ways. You can define
 --- a custom `func` to modify the values in specific ways. `hands` and `parameters` can
 --- be limited to specific ones, or default to using all of `G.GAME.hands` and `SMODS.Scoring_Parameters`.
 --- Use `level_up` to control whether the level of the hand is upgraded.
-    function SMODS.upgrade_poker_hands(args) end
+--- Use `StatusText` to control the text that appears when a parameter is upgraded, it can be:
+--- a string, which changes the displayed text, a boolean, which disables StatusText when set to `false`,
+--- a table, which defines the `attention_text` function settings, or a function that takes the key of
+--- the hand and scoring parameter being upgraded as arguments and returns a boolean, string or table
+function SMODS.upgrade_poker_hands(args) end
+
+---Returns the text colour for the card type's badge or nil if none
+---@param type string?
+---@param center SMODS.Center|table?
+---@param card Card|table?
+---@return table?
+function SMODS.get_card_type_text_colour(type, center, card) end
+
+---Returns the text colour for the badge of an object with this key or nil if none
+---@param key string
+---@return table?
+function SMODS.get_badge_text_colour(key) end
