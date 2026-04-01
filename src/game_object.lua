@@ -115,6 +115,10 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
     -- Checked on __call but not take_ownership. For take_ownership, the key must exist
     function SMODS.GameObject:check_duplicate_key()
         if self.obj_table[self.key] or (self.get_obj and self:get_obj(self.key)) then
+            if self.set == 'Attribute' then
+                SMODS.Attributes[self.key].keys = SMODS.merge_lists({SMODS.Attributes[self.key].keys, self.keys})
+                return true
+            end
             sendWarnMessage(('Object %s has the same key as an existing object, not registering.'):format(self.key), self.set)
             sendWarnMessage('If you want to modify an existing object, use take_ownership()', self.set)
             return true
@@ -388,6 +392,12 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             if self.key == (G.SETTINGS.real_language or G.SETTINGS.language) then G.LANG = self end
         end,
     }
+
+    -------------------------------------------------------------------------------------------------
+    ----- API CODE GameObject.Attribute
+    -------------------------------------------------------------------------------------------------
+
+    assert(load(SMODS.NFS.read(SMODS.path..'src/game_objects/attributes.lua'), ('=[SMODS _ "src/game_objects/attributes.lua"]')))()
 
     -------------------------------------------------------------------------------------------------
     ----- INTERNAL API CODE GameObject._Loc_Pre
@@ -703,8 +713,8 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             if self.above_stake and G.P_STAKES[self.above_stake] then
                 self.order = G.P_STAKES[self.above_stake].order + 1
             end
-            for _, v in pairs(G.P_STAKES) do
-                if v.order >= self.order then
+            for i, v in pairs(G.P_STAKES) do
+                if i ~= self.key and v.order >= self.order then
                     v.order = v.order + 1
                 end
             end
@@ -1186,6 +1196,13 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 -- Changing "cards" and "pools" wouldn't be hard to do, just depends on preferred format
                 if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) then
                     v:inject_card(self)
+                end
+            end
+            if self.attributes then
+                for _, attribute in ipairs(self.attributes) do
+                    if SMODS.Attributes[attribute] then
+                        SMODS.Attributes[attribute].keys = SMODS.merge_lists({SMODS.Attributes[attribute].keys or {}, {self.key}})
+                    end
                 end
             end
         end,
@@ -1966,6 +1983,9 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         max_nominal = {
             value = 0,
         },
+        max_sort_id = {
+            value = 4,
+        },
         register = function(self)
             -- 0.9.8 compat
             self.name = self.name or self.key
@@ -1976,6 +1996,10 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             self.used_card_keys[self.card_key] = true
             self.max_nominal.value = self.max_nominal.value + 0.01
             self.suit_nominal = self.max_nominal.value
+            if not self.sort_id then
+                self.max_sort_id.value = self.max_sort_id.value + 1
+                self.sort_id = self.max_sort_id.value
+            end
             local def = 'default_'..self.key
             if G.COLLABS.options[self.key] == nil then
                 G.COLLABS.options[self.key] = {def}
@@ -2045,6 +2069,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pos = { y = 2 },
         ui_pos = { x = 1, y = 1 },
         keep_base_colours = true,
+        sort_id = 3,
     }
     SMODS.Suit {
         key = 'Clubs',
@@ -2052,6 +2077,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pos = { y = 1 },
         ui_pos = { x = 2, y = 1 },
         keep_base_colours = true,
+        sort_id = 4,
     }
     SMODS.Suit {
         key = 'Hearts',
@@ -2059,6 +2085,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pos = { y = 0 },
         ui_pos = { x = 0, y = 1 },
         keep_base_colours = true,
+        sort_id = 2,
     }
     SMODS.Suit {
         key = 'Spades',
@@ -2066,6 +2093,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pos = { y = 3 },
         ui_pos = { x = 3, y = 1 },
         keep_base_colours = true,
+        sort_id = 1,
     }
     -------------------------------------------------------------------------------------------------
     ----- API CODE GameObject.Rank
@@ -2111,6 +2139,9 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         max_id = {
             value = 1,
         },
+        max_sort_id = {
+            value = 13,
+        },
         register = function(self)
             if self.used_card_keys[self.card_key] then
                 sendWarnMessage(('Tried to use duplicate card key %s, aborting registration'):format(self.card_key), self.set)
@@ -2121,6 +2152,10 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             self.id = self.max_id.value
             self.shorthand = self.shorthand or self.key
             self.sort_nominal = self.nominal + (self.face_nominal or 0)
+            if not self.sort_id then
+                self.max_sort_id.value = self.max_sort_id.value + 1
+                self.sort_id = self.max_sort_id.value
+            end
             self.prev = self.prev or {}
             if self:check_dependencies() and not self.obj_table[self.key] then
                 self.obj_table[self.key] = self
@@ -2171,6 +2206,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             card_key = v .. '',
             pos = { x = v - 2 },
             nominal = v,
+            sort_id = v - 1,
             next = { (v + 1) .. '' },
         }
     end
@@ -2179,6 +2215,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         card_key = 'T',
         pos = { x = 8 },
         nominal = 10,
+        sort_id = 9,
         next = { 'Jack' },
     }
     SMODS.Rank {
@@ -2188,6 +2225,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         nominal = 10,
         face_nominal = 0.1,
         face = true,
+        sort_id = 10,
         shorthand = 'J',
         next = { 'Queen' },
     }
@@ -2198,6 +2236,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         nominal = 10,
         face_nominal = 0.2,
         face = true,
+        sort_id = 11,
         shorthand = 'Q',
         next = { 'King' },
     }
@@ -2208,6 +2247,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         nominal = 10,
         face_nominal = 0.3,
         face = true,
+        sort_id = 12,
         shorthand = 'K',
         next = { 'Ace' },
     }
@@ -2217,6 +2257,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         pos = { x = 12 },
         nominal = 11,
         face_nominal = 0.4,
+        sort_id = 13,
         shorthand = 'A',
         straight_edge = true,
         next = { '2' },
@@ -2394,7 +2435,6 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 func = function()
                     local cards = {}
                     for i = 1, card.ability.extra do
-                        -- TODO preserve suit vanilla RNG
                         local _suit, _rank =
                             pseudorandom_element(SMODS.Suits, pseudoseed('grim_create')).card_key, 'A'
                         local cen_pool = {}
@@ -2426,15 +2466,14 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 func = function()
                     local cards = {}
                     for i = 1, card.ability.extra do
-                        -- TODO preserve suit vanilla RNG
                         local faces = {}
                         for _, v in ipairs(SMODS.Rank.obj_buffer) do
                             local r = SMODS.Ranks[v]
                             if r.face then table.insert(faces, r) end
                         end
-                        local _suit, _rank =
-                            pseudorandom_element(SMODS.Suits, pseudoseed('familiar_create')).card_key,
-                            pseudorandom_element(faces, pseudoseed('familiar_create')).card_key
+                        local _rank, _suit =
+                            pseudorandom_element(faces, pseudoseed('familiar_create')).card_key,
+                            pseudorandom_element(SMODS.Suits, pseudoseed('familiar_create')).card_key
                         local cen_pool = {}
                         for k, v in pairs(G.P_CENTER_POOLS["Enhanced"]) do
                             if v.key ~= 'm_stone' and not v.overrides_base_rank then
@@ -2464,15 +2503,14 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 func = function()
                     local cards = {}
                     for i = 1, card.ability.extra do
-                        -- TODO preserve suit vanilla RNG
                         local numbers = {}
                         for _, v in ipairs(SMODS.Rank.obj_buffer) do
                             local r = SMODS.Ranks[v]
                             if v ~= 'Ace' and not r.face then table.insert(numbers, r) end
                         end
-                        local _suit, _rank =
-                            pseudorandom_element(SMODS.Suits, pseudoseed('incantation_create')).card_key,
-                            pseudorandom_element(numbers, pseudoseed('incantation_create')).card_key
+                        local _rank, _suit =
+                            pseudorandom_element(numbers, pseudoseed('incantation_create')).card_key,
+                            pseudorandom_element(SMODS.Suits, pseudoseed('incantation_create')).card_key
                         local cen_pool = {}
                         for k, v in pairs(G.P_CENTER_POOLS["Enhanced"]) do
                             if v.key ~= 'm_stone' and not v.overrides_base_rank then
@@ -2938,6 +2976,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 return
             end
             self.id = self.key
+            if not self.deck.type then self.deck.type = SMODS.Challenge.deck.type end
             -- only needs to be called once
             SMODS.insert_pool(G.CHALLENGES, self)
             SMODS.Challenge.super.register(self)
