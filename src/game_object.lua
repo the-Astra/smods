@@ -1201,6 +1201,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             if self.attributes then
                 for _, attribute in ipairs(self.attributes) do
                     if SMODS.Attributes[attribute] then
+                        self.attributes[attribute] = true
                         SMODS.Attributes[attribute].keys = SMODS.merge_lists({SMODS.Attributes[attribute].keys or {}, {self.key}})
                     end
                 end
@@ -1745,7 +1746,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         create_card = function(self, card, i)
             local _edition = poll_edition('standard_edition'..G.GAME.round_resets.ante, 2, true)
             local _seal = SMODS.poll_seal({mod = 10})
-            return {set = (pseudorandom(pseudoseed('stdset'..G.GAME.round_resets.ante)) > 0.6) and "Enhanced" or "Base", edition = _edition, seal = _seal, area = G.pack_cards, skip_materialize = true, soulable = true, key_append = "sta"}
+            return {set = (pseudorandom(pseudoseed('stdset'..G.GAME.round_resets.ante)) > 0.6) and "Enhanced" or "Base", edition = _edition, seal = _seal, area = G.pack_cards, skip_materialize = true, soulable = true, key_append = "sta", front = false}
         end,
         loc_vars = pack_loc_vars,
     })
@@ -3371,7 +3372,8 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         inject = function(self)
             self.full_path = (self.mod and self.mod.path or SMODS.path) ..
                 'assets/shaders/' .. self.path
-            local file = NFS.read(self.full_path)
+            local file = assert(NFS.read(self.full_path),
+                ('Failed to collect file data for Shader %s'):format(self.key))
             local lovely_success, lovely = pcall(require, "lovely")
             if lovely_success and lovely.apply_patches then
                 file = assert(lovely.apply_patches("=[SMODS " .. self.mod.id .. ' "' .. self.path .. '"]', file))
@@ -3800,6 +3802,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         key = 'chips',
         default_value = 0,
         colour = G.C.UI_CHIPS,
+        juice_on_update = true,
         calculation_keys = {'chips', 'h_chips', 'chip_mod', 'x_chips', 'xchips', 'Xchip_mod',},
         calc_effect = function(self, effect, scored_card, key, amount, from_edition)
             if not SMODS.Calculation_Controls.chips then return end

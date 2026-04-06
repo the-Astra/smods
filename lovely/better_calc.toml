@@ -13,12 +13,11 @@ pattern = '''(?<indent>[\t ]*)(?<handtext>if modded then update_hand_text\(\{sou
 position = 'at'
 line_prepend = '$indent'
 payload = '''$handtext
-delay(0.3)
 SMODS.calculate_context({initial_scoring_step = true, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands})
 for _, v in ipairs(SMODS.get_card_areas('playing_cards')) do
     SMODS.calculate_main_scoring({cardarea = v, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands}, v == G.play and scoring_hand or nil)
-    delay(0.3)
 end
+delay(0.3)
 $delimiter'''
 ## eval_card()
 # handle debuffed playing cards
@@ -121,7 +120,7 @@ if context.cardarea == G.play and context.main_scoring then
         ret.playing_card.score = score
     end
     local x_score = card:get_bonus_x_score()
-    if x_score ~= 1 then
+    if x_score > 0 then
         ret.playing_card.x_score = x_score
     end
     -- TARGET: main scoring on played cards
@@ -130,7 +129,7 @@ if context.cardarea == G.play and context.main_scoring then
         ret.playing_card.blind_size = blind_size
     end
     local x_blind_size = card:get_bonus_x_blind_size()
-    if x_blind_size ~= 1 then
+    if x_blind_size > 0 then
         ret.playing_card.x_blind_size = x_blind_size
     end
     -- TARGET: main scoring on played cards
@@ -192,7 +191,7 @@ if context.cardarea == G.hand and context.main_scoring then
         ret.playing_card.h_score = h_score
     end
     local h_x_score = card:get_bonus_h_x_score()
-    if h_x_score ~= 1 then
+    if h_x_score > 0 then
         ret.playing_card.h_x_score = h_x_score
     end
 	local h_blind_size = card:get_bonus_h_blind_size()
@@ -200,7 +199,7 @@ if context.cardarea == G.hand and context.main_scoring then
         ret.playing_card.blind_size = h_blind_size
     end
     local h_x_blind_size = card:get_bonus_h_x_blind_size()
-    if h_x_blind_size ~= 1 then
+    if h_x_blind_size > 0 then
         ret.playing_card.x_blind_size = h_x_blind_size
     end
 
@@ -1183,15 +1182,17 @@ pattern = '''
 draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
 '''
 payload = '''
-if cards_to_draw[i].ability.extra_slots_used then SMODS.cards_to_draw = SMODS.cards_to_draw + cards_to_draw[i].ability.extra_slots_used end
+if cards_to_draw[i] and cards_to_draw[i].ability and cards_to_draw[i].ability.extra_slots_used then
+    SMODS.cards_to_draw = SMODS.cards_to_draw + cards_to_draw[i].ability.extra_slots_used
+    G.E_MANAGER:add_event(Event({
+        trigger = 'immediate',
+        func = function()                
+            SMODS.cards_to_draw = SMODS.cards_to_draw - cards_to_draw[i].ability.extra_slots_used
+            return true
+        end
+    }))
+end
 draw_card(G.deck,G.hand, i*100/hand_space,'up', true, cards_to_draw[i])
-G.E_MANAGER:add_event(Event({
-    trigger = 'immediate',
-    func = function()                
-        SMODS.cards_to_draw = SMODS.cards_to_draw - cards_to_draw[i].ability.extra_slots_used
-        return true
-    end
-}))
 '''
 
 
