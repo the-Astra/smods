@@ -39,8 +39,8 @@ position = "before"
 payload = '''
 if (card.config.center.button_config and type(card.config.center.button_config) == 'table')
     or (SMODS.ConsumableTypes[card.ability.set] and SMODS.ConsumableTypes[card.ability.set].button_config and type(SMODS.ConsumableTypes[card.ability.set].button_config) == 'table') then
+    
     local button_config = card.config.center.button_config or SMODS.ConsumableTypes[card.ability.set].button_config
-    print(button_config)
     return {
     n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
         {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
@@ -68,7 +68,6 @@ payload = '''
 if (card.config.center.button_config and type(card.config.center.button_config) == 'table')
     or (SMODS.ConsumableTypes[card.ability.set] and SMODS.ConsumableTypes[card.ability.set].button_config and type(SMODS.ConsumableTypes[card.ability.set].button_config) == 'table') then
     local button_config = card.config.center.button_config or SMODS.ConsumableTypes[card.ability.set].button_config
-    print(button_config)
 
     for k, v in button_config do
         if not v and base_attach.children[k] then
