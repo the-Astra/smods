@@ -69,7 +69,7 @@ if (card.config.center.button_config and type(card.config.center.button_config) 
     or (SMODS.ConsumableTypes[card.ability.set] and SMODS.ConsumableTypes[card.ability.set].button_config and type(SMODS.ConsumableTypes[card.ability.set].button_config) == 'table') then
     local button_config = card.config.center.button_config or SMODS.ConsumableTypes[card.ability.set].button_config
 
-    for k, v in button_config do
+    for k, v in pairs(button_config) do
         if not v and base_attach.children[k] then
             base_attach.children[k] = nil
         end
