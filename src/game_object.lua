@@ -1797,6 +1797,15 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
     SMODS.UndiscoveredSprite { key = 'Voucher', atlas = 'Voucher', pos = G.v_undiscovered.pos }
     SMODS.UndiscoveredSprite { key = 'Booster', atlas = 'Booster', pos = G.booster_undiscovered.pos }
 
+    
+
+SMODS.UndiscoveredCompat = {
+    Joker = true,
+    Edition = true,
+    Voucher = true,
+    Booster = true,
+}
+
     -------------------------------------------------------------------------------------------------
     ----- API CODE GameObject.Blind
     -------------------------------------------------------------------------------------------------
