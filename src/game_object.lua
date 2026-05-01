@@ -3812,7 +3812,7 @@ SMODS.UndiscoveredCompat = {
                 if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
                 self:modify(amount)
                 card_eval_status_text(scored_card, 'extra', nil, percent, nil, 
-                    {message = localize{type = 'variable', key = amount > 0 and 'a_chips' or 'a_chips_minus', vars = {amount}}, colour = self.colour})
+                    {message = localize{type = 'variable', key = amount > 0 and 'a_chips' or 'a_chips_minus', vars = {math.abs(amount)}}, colour = self.colour})
                 return true
             end
         end
@@ -3830,7 +3830,7 @@ SMODS.UndiscoveredCompat = {
                 self:modify(amount)
                 if not effect.remove_default_message then
                     if from_edition then
-                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_chips' or 'a_chips_minus', vars = {amount}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_chips' or 'a_chips_minus', vars = {math.abs(amount)}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
                     else
                         if key ~= 'chip_mod' then
                             if effect.chip_message then
@@ -3848,7 +3848,7 @@ SMODS.UndiscoveredCompat = {
                 self:modify(hand_chips * (amount - 1))
                 if not effect.remove_default_message then
                     if from_edition then
-                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type='variable',key= amount > 0 and 'a_xchips' or 'a_xchips_minus',vars={amount}}, Xchips_mod =  amount, colour =  G.C.EDITION, edition = true})
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type='variable',key= amount > 0 and 'a_xchips' or 'a_xchips_minus',vars={math.abs(amount)}}, Xchips_mod =  amount, colour =  G.C.EDITION, edition = true})
                     else
                         if key ~= 'Xchip_mod' then
                             if effect.xchip_message then
@@ -3882,7 +3882,7 @@ SMODS.UndiscoveredCompat = {
                 self:modify(amount)
                 if not effect.remove_default_message then
                     if from_edition then
-                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_mult' or 'a_mult_minus', vars = {amount}}, mult_mod = amount, colour = G.C.DARK_EDITION, edition = true})
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_mult' or 'a_mult_minus', vars = {math.abs(amount)}}, mult_mod = amount, colour = G.C.DARK_EDITION, edition = true})
                     else
                         if key ~= 'mult_mod' then
                             if effect.mult_message then
