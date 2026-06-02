@@ -1480,7 +1480,7 @@ SMODS.other_calculation_keys = {
     'message',
     'level_up', 'func',
     'numerator', 'denominator',
-    'modify', 'cashout_mod',
+    'modify',
     'no_destroy', 'prevent_trigger',
     'replace_scoring_name', 'replace_display_name', 'replace_poker_hands',
     'shop_create_flags',
@@ -1494,7 +1494,7 @@ SMODS.silent_calculation = {
     cards_to_draw = true,
     func = true, extra = true,
     numerator = true, denominator = true,
-    no_destroy = true, cashout_mod = true
+    no_destroy = true
 }
 
 SMODS.insert_repetitions = function(ret, eval, effect_card, _type)
@@ -1836,16 +1836,16 @@ function SMODS.update_context_flags(context, flags)
     if flags.denominator then context.denominator = flags.denominator end
     if flags.cards_to_draw then context.amount = flags.cards_to_draw end
     if flags.saved then context.game_over = false end
-    if flags.cashout_mod then
-        context.dollars = context.dollars + flags.cashout_mod
-        SMODS.cashout_dollars = context.dollars
-        SMODS.cashout_index = SMODS.cashout_index + 1
-        SMODS.cashout_pitch = SMODS.cashout_pitch + 0.06
-    end
     if flags.modify then
         -- insert general modified value updating here
         if context.modify_ante then context.modify_ante = flags.modify end
         if context.drawing_cards then context.amount = flags.modify end
+        if context.modify_final_cashout then
+            context.dollars = context.dollars + flags.modify
+            SMODS.cashout_dollars = context.dollars
+            SMODS.cashout_index = SMODS.cashout_index + 1
+            SMODS.cashout_pitch = SMODS.cashout_pitch + 0.06
+        end
     end
 end
 
