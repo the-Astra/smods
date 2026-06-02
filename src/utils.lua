@@ -1478,7 +1478,7 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         return { [key] = amount }
     end
 
-    if key == 'cashout_mod' then
+    if key == 'modify' then
         add_round_eval_row({dollars = amount, bonus = true, name='joker'..SMODS.cashout_index, pitch = SMODS.cashout_pitch, card = scored_card})
         return { [key] = amount }
     end
