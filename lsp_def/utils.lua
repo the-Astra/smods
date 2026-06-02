@@ -126,6 +126,7 @@
 ---@field new_level? integer Level of the poker hand after the alteration, if it was changed.
 ---@field old_parameters? table<'chips'|'mult'|string, number> Altered scoring parameters of the poker hand before the alteration.
 ---@field new_parameters? table<'chips'|'mult'|string, number> Altered scoring parameters of the poker hand after the alteration.
+---@field modify_final_cashout? true Check if `true` for modifying the amount of money at the end of cashout.
 
 --- Util Functions
 

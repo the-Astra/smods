@@ -2155,7 +2155,7 @@ position = "after"
 payload = '''
 
     SMODS.cashout_pitch = pitch; SMODS.cashout_index = i; SMODS.cashout_dollars = dollars
-    SMODS.calculate_context({modify_final_cashout = true, dollars = dollars})
+    SMODS.calculate_context({modify_final_cashout = true, amount = dollars})
     dollars = SMODS.cashout_dollars
     SMODS.cashout_pitch = nil; SMODS.cashout_index = nil; SMODS.cashout_dollars = nil
 '''

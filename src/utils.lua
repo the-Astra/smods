@@ -1949,8 +1949,8 @@ function SMODS.update_context_flags(context, flags)
         if context.drawing_cards then context.amount = math.max(flags.modify, 0) end
     end
     if flags.cashout_mod then
-        context.dollars = context.dollars + flags.cashout_mod
-        SMODS.cashout_dollars = context.dollars
+        context.amount = context.amount + flags.cashout_mod
+        SMODS.cashout_dollars = context.amount
         SMODS.cashout_index = SMODS.cashout_index + 1
         SMODS.cashout_pitch = SMODS.cashout_pitch + 0.06
     end
