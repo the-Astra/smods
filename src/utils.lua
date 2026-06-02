@@ -1478,7 +1478,7 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         return { [key] = amount }
     end
 
-    if key == 'modify' then
+    if key == 'cashout_mod' then
         add_round_eval_row({dollars = amount, bonus = true, name='joker'..SMODS.cashout_index, pitch = SMODS.cashout_pitch, card = scored_card})
         return { [key] = amount }
     end
@@ -1585,7 +1585,7 @@ SMODS.other_calculation_keys = {
     'message',
     'level_up', 'func',
     'numerator', 'denominator',
-    'modify',
+    'modify', 'cashout_mod',
     'no_destroy', 'prevent_trigger',
     'replace_scoring_name', 'replace_display_name', 'replace_poker_hands',
     'shop_create_flags', 'booster_create_flags',
@@ -1599,7 +1599,7 @@ SMODS.silent_calculation = {
     cards_to_draw = true,
     func = true, extra = true,
     numerator = true, denominator = true,
-    no_destroy = true
+    no_destroy = true, cashout_mod = true
 }
 
 SMODS.insert_repetitions = function(ret, eval, effect_card, _type)
@@ -1946,13 +1946,13 @@ function SMODS.update_context_flags(context, flags)
         -- insert general modified value updating here
         if context.modify_ante then context.modify_ante = flags.modify end
         if context.drawing_cards then context.amount = flags.modify end
-        if context.modify_final_cashout then
-            context.dollars = context.dollars + flags.modify
-            SMODS.cashout_dollars = context.dollars
-            SMODS.cashout_index = SMODS.cashout_index + 1
-            SMODS.cashout_pitch = SMODS.cashout_pitch + 0.06
-        end
         if context.drawing_cards then context.amount = math.max(flags.modify, 0) end
+    end
+    if flags.cashout_mod then
+        context.dollars = context.dollars + flags.cashout_mod
+        SMODS.cashout_dollars = context.dollars
+        SMODS.cashout_index = SMODS.cashout_index + 1
+        SMODS.cashout_pitch = SMODS.cashout_pitch + 0.06
     end
     if context.evaluate_poker_hand then
         if flags.replace_scoring_name then
