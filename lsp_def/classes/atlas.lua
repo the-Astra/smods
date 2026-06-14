@@ -5,7 +5,8 @@
 ---@field super? SMODS.GameObject|table Parent class. 
 ---@field px? string|number Width of individual sprites using this atlas. 
 ---@field py? string|number Height of individual sprite using this atlas. 
----@field path? string Name of the image file, including extension. 
+---@field path? string Name of the image file, including extension.
+---@field path_mod? Mod|table The mod this object's `path` belongs to, if this is not the same mod it was created by.
 ---@field atlas_table? "ASSET_ATLAS"|"ANIMATION_ATLAS"|"ASSET_IMAGES"|string Type of atlas. `ASSET_ATLAS`: non-animated sprites, `ANIMATION_ATLAS`: animated sprites, `ASSET_IMAGES`: anything other image, e.g. logos. 
 ---@field frames? number Number of frames in the animation. 
 ---@field fps? number Speed of animation based on frames per second. Default: 10 or G.ANIMATION_FPS.
