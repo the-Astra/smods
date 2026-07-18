@@ -767,7 +767,7 @@ suits["Clubs"] > 0 then
     }
 end"""
 position = "at"
-payload = """if SMODS.seeing_double_check(context.scoring_hand, 'Clubs') and #context.scoring_hand > 1 then
+payload = """if SMODS.seeing_double_check(context.scoring_hand, 'Clubs') then
     return {
         message = localize{type='variable',key='a_xmult',vars={self.ability.extra}},
         Xmult_mod = self.ability.extra

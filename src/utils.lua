@@ -2659,9 +2659,12 @@ function SMODS.seeing_double_check(hand, suit)
     end
     for i = 1, #hand do
         if SMODS.has_any_suit(hand[i]) then
-            if hand[i]:is_suit(suit) and suit_tally[suit] == 0 then suit_tally[suit] = suit_tally[suit] + 1 end
-            for k, v in pairs(suit_tally) do
-                if hand[i]:is_suit(k) and suit_tally[k] == 0  then suit_tally[k] = suit_tally[k] + 1 end
+            if hand[i]:is_suit(suit) and suit_tally[suit] == 0 then
+                suit_tally[suit] = 1
+            else
+                for k, v in pairs(suit_tally) do
+                    if hand[i]:is_suit(k) and suit_tally[k] == 0  then suit_tally[k] = 1 end
+                end
             end
         end
     end
