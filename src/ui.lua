@@ -1888,9 +1888,13 @@ function create_UIBox_mods_button()
                                     return {
                                         n = G.UIT.ROOT,
                                         config = {
+                                            emboss = 0.05,
+                                            minh = 6,
+                                            r = 0.1,
+                                            minw = 6,
                                             align = "cm",
-                                            padding = 0.05,
-                                            colour = G.C.CLEAR,
+                                            padding = 0.2,
+                                            colour = G.C.BLACK,
                                         },
                                         nodes = {
                                             create_toggle {
@@ -1912,7 +1916,13 @@ function create_UIBox_mods_button()
                                                 opt_callback = 'update_achievement_settings',
                                                 current_option = SMODS.config.achievements,
                                                 cycle_shoulders = true,
-                                            }
+                                            },
+                                            create_toggle {
+                                                label = localize('b_vanilla_run_select'),
+                                                ref_table = SMODS.config,
+                                                ref_value = 'vanilla_run_select',
+                                                info = {localize('b_vanilla_run_select_info')}
+                                            },
                                         }
                                     }
                                 end
