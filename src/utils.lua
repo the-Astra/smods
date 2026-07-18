@@ -555,7 +555,7 @@ function SMODS.create_mod_badge(mod, obj, width, text_height)
             end
         end,
     })
-    return {n=G.UIT.R, config={align = "cm", id = 'badge_'..mod.id, colour = mod.badge_colour or G.C.GREEN, r = 0.1, minw = 2, minh = 0.36, emboss = 0.05, padding = 0.027}, nodes={
+    return {n=G.UIT.R, config={align = "cm", id = 'badge_'..mod.id, colour = mod.badge_colour or G.C.GREEN, shader = not obj.no_shader_on_modbadge and mod.badge_shader or nil, r = 0.1, minw = 2, minh = 0.36, emboss = 0.05, padding = 0.027}, nodes={
         {n=G.UIT.B, config={h=0.1,w=0.03}},
         {n=G.UIT.O, config={id = 'smods_mod_badge_text', object=badge_scroll}},
         {n=G.UIT.B, config={h=0.1,w=0.03}},
