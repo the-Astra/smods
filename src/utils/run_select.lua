@@ -310,6 +310,7 @@ function SMODS.RunSelect.Functions.start_run(_quick_start)
     G:save_settings()
     
     run_args.deck_choice = {name = G.P_CENTERS[run_args.deck_choice].name}
+    run_args.stake_choice = G.P_STAKES[run_args.stake_choice].order
     
     G.FUNCS.start_run(nil, run_args)
 end
