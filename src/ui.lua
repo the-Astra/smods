@@ -1923,6 +1923,12 @@ function create_UIBox_mods_button()
                                                 ref_value = 'vanilla_run_select',
                                                 info = {localize('b_vanilla_run_select_info')}
                                             },
+                                            create_toggle {
+                                                label = localize('b_run_select_reduce'),
+                                                ref_table = SMODS.config,
+                                                ref_value = 'run_select_performance',
+                                                info = {localize('b_run_select_reduce_info')}
+                                            },
                                         }
                                     }
                                 end
