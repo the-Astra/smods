@@ -460,10 +460,29 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             if not self.language and (self.obj_table[('%s_%s'):format(self.key, G.SETTINGS.language)] or self.obj_table[('%s_%s'):format(self.key, G.SETTINGS.real_language)]) then return end
             self.full_path = (self.path_mod or self.mod or SMODS).path ..
                 'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path
-            local file_data = assert(NFS.newFileData(self.full_path),
-                ('Failed to collect file data for Atlas %s'):format(self.key))
-            self.image_data = assert(love.image.newImageData(file_data),
-                ('Failed to initialize image data for Atlas %s'):format(self.key))
+            local file_data = NFS.newFileData(self.full_path)
+            if file_data then
+                self.image_data = assert(love.image.newImageData(file_data),
+                    ('Failed to initialize image data for Atlas %s'):format(self.key))
+            else
+                self.full_path = string.gsub(self.full_path, "assets/" .. G.SETTINGS.GRAPHICS.texture_scaling .. "x/", "assets/"..(3 - G.SETTINGS.GRAPHICS.texture_scaling) .. "x/", 1)
+                file_data = assert(NFS.newFileData(self.full_path),
+                    ('Failed to collect file data for Atlas %s'):format(self.key))
+                self.image_data = assert(love.image.newImageData(file_data),
+                    ('Failed to initialize image data for Atlas %s'):format(self.key))
+                local shifts = { bit.rshift, bit.lshift }
+                local shift_dim, shift_pixel = shifts[G.SETTINGS.GRAPHICS.texture_scaling], shifts[3-G.SETTINGS.GRAPHICS.texture_scaling]
+                local imageData2 = love.image.newImageData(
+                    shift_dim(self.image_data:getWidth(), 1),
+                    shift_dim(self.image_data:getHeight(), 1),
+                    self.image_data:getFormat()
+                )
+                imageData2:mapPixel(function(x, y)
+                    return self.image_data:getPixel(shift_pixel(x, 1), shift_pixel(y, 1))
+                end)
+                self.image_data:release()
+                self.image_data = imageData2
+        	end
             self.image = love.graphics.newImage(self.image_data,
                 { mipmaps = true, dpiscale = G.SETTINGS.GRAPHICS.texture_scaling })
             G[self.atlas_table][self.key_noloc or self.key] = self
