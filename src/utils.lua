@@ -2703,7 +2703,8 @@ function SMODS.localize_box(lines, args)
             underline = part.control.u and loc_colour(part.control.u),
             strikethrough = part.control.st and loc_colour(part.control.st),
             font = SMODS.Fonts[part.control.f] or G.FONTS[tonumber(part.control.f)],
-            scale_mod = part.control.s and tonumber(part.control.s) or args.scale  or 1
+            scale_mod = part.control.s and tonumber(part.control.s) or args.scale  or 1,
+            text_outline = part.control.O and loc_colour(part.control.O),
         }
         local desc_scale = (thunk.font or G.LANG.font).DESCSCALE
         if G.F_MOBILE_UI then desc_scale = desc_scale*1.5 end
@@ -2737,6 +2738,7 @@ function SMODS.localize_box(lines, args)
               button = part.control.button,
               strikethrough = part.control.st and loc_colour(part.control.st),
               underline = part.control.u and loc_colour(part.control.u),
+              text_outline = part.control.O and loc_colour(part.control.O),
               scale = (0.55 - 0.004*#(final_name_assembled_string or assembled_string))*thunk.scale_mod*(args.fixed_scale or 1)
             })
           }}
@@ -2775,6 +2777,7 @@ function SMODS.localize_box(lines, args)
                     font = thunk.font,
                     underline = thunk.underline,
                     strikethrough = thunk.strikethrough,
+                    text_outline = thunk.text_outline,
                     scale = 0.32*thunk.scale_mod*desc_scale}},
                 }}
         else
@@ -2795,6 +2798,7 @@ function SMODS.localize_box(lines, args)
                 font = thunk.font,
                 underline = thunk.underline,
                 strikethrough = thunk.strikethrough,
+                text_outline = thunk.text_outline,
                 scale = 0.32*thunk.scale_mod*desc_scale
             }}
         end
@@ -4169,6 +4173,38 @@ function UIElement:set_text_shader(shader, send, shadow)
         end
     })
 end
+
+function UIElement:draw_text_outline(button_active)
+	if not button_active then
+		return
+	end
+	love.graphics.setColor(self.config.text_outline)
+	for x = -1, 1 do
+		for y = -1, 1 do
+			if x ~= 0 or y ~= 0 then
+				love.graphics.draw(
+					self.config.text_drawable,
+					((self.config.font or self.config.lang.font).TEXT_OFFSET.x + x * 20)
+						* self.config.scale
+						* (self.config.font or self.config.lang.font).FONTSCALE
+						/ G.TILESIZE,
+					((self.config.font or self.config.lang.font).TEXT_OFFSET.y + y * 20)
+						* self.config.scale
+						* (self.config.font or self.config.lang.font).FONTSCALE
+						/ G.TILESIZE,
+					0,
+					self.config.scale
+						* (self.config.font or self.config.lang.font).squish
+						* (self.config.font or self.config.lang.font).FONTSCALE
+						/ G.TILESIZE,
+					self.config.scale * (self.config.font or self.config.lang.font).FONTSCALE / G.TILESIZE
+				)
+			end
+		end
+	end
+	love.graphics.setColor(self.config.colour)
+end
+
 
 -- function to modify score: normally accepts add and mult argument and additionally card argument
 SMODS.mod_score = function(score_mod)
