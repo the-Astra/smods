@@ -22,12 +22,10 @@ SMODS.RunSelectPage = SMODS.GameObject:extend({
         self.page = self.page or (#SMODS.RunSelect.Internals.pages + 1)
         self.grid_size = self.grid_size or {2, 5}
         self.amount = self.grid_size[1] * self.grid_size[2] 
-        if self.generate_pool then
-            self.pool = self:generate_pool()
-        end
+        self.pool = self.generate_pool and self:generate_pool()
         if not self.injected then
             if self.quick_start_text then
-                table.insert(SMODS.RunSelect.Internals.quick_start_text_functions, self.quick_start_text)
+                table.insert(SMODS.RunSelect.Internals.quick_start_text_functions, self.page, self.quick_start_text)
             end
             table.insert(SMODS.RunSelect.Internals.pages, self.page, self.key)
             for i = self.page + 1, #SMODS.RunSelect.Internals.pages do
@@ -114,7 +112,9 @@ SMODS.RunSelectPage({
     area_type = 'deck',
     automatic_preview = true,
     random_select = true,
-    pool = G.P_CENTER_POOLS.Back,
+    generate_pool = function(self)
+        return G.P_CENTER_POOLS.Back
+    end,
     stack_size = 10,
     preview_size = 52,
     quick_start_text = function()
