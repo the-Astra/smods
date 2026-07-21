@@ -325,8 +325,9 @@ function SMODS.RunSelect.Functions.start_run(_quick_start)
 end
 
 local start_run = Game.start_run
-function Game:start_run(...)
-    start_run(self, ...)
+function Game:start_run(args)
+    start_run(self, args)
+    if args.savetext then return end
     for _, value in ipairs(SMODS.RunSelectPage.obj_buffer) do
         local page = SMODS.RunSelect.Pages[value]
         if (not page.optional or (page.optional and page:optional())) and page.start_run and type(page.start_run) == 'function' and (not page.pool or G.PROFILES[G.SETTINGS.profile].last_choices[value])  then
