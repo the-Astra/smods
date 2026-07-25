@@ -1920,7 +1920,7 @@ function get_front_spriteinfo(_front)
 					return atlas, _front.pos, sprite_args
 				else
 					local palette = deckSkin.palette_map and deckSkin.palette_map[G.SETTINGS.colour_palettes[_front.suit] or ''] or (deckSkin.palettes or {})[1]
-					local sprite_args = (palette.sprite_args_by_value or {})[_front.value]
+					local sprite_args = (palette.sprite_args_by_value or {})[_front.value] or (deckSkin.sprite_args_by_value or {})[_front.value]
 					local hasRank = false
 					for i = 1, #palette.ranks do
 						if palette.ranks[i] == _front.value then hasRank = true break end
