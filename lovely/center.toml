@@ -723,7 +723,7 @@ SMODS.create_card_scale = SMODS.create_card_scale or {w = 1, h = 1}
 local card = Card(area.T.x + area.T.w/2, area.T.y, G.CARD_W*SMODS.create_card_scale.w, G.CARD_H*SMODS.create_card_scale.h, front, center,
 '''
 
-# Automalically get the colour of a custom consumable type for materializing
+# Automatically get the colour of a custom consumable type for materializing
 # Card.start_materialize
 [[patches]]
 [patches.pattern]
