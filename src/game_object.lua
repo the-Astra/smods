@@ -508,7 +508,7 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 atlas.columns = atlas.image:getWidth() / atlas.px
                 atlas.rows = atlas.image:getHeight() / atlas.py
             end
-            for key, atlas in pairs(G.ANIMATION_ATLAS) do
+            for _, atlas in pairs(G.ANIMATION_ATLAS) do
                 atlas.columns = atlas.image:getWidth() / atlas.px
                 atlas.rows = atlas.image:getHeight() / atlas.py
             end
