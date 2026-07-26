@@ -3049,7 +3049,7 @@ function AnimatedSprite:set_sprite_pos(sprite_pos)
         w = self.animation.w,
         h = self.animation.h,
 		frame_index = 0,
-		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1
+		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1 / (self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS or 1
 	}
 
     self.image_dims = self.image_dims or {}

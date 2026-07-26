@@ -516,10 +516,12 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
     function Game:set_render_settings()
         local ret = game_set_render_settings(self)
         for _, atlas in pairs(G.ASSET_ATLAS) do
+            atlas.atlas_table = "ASSET_ATLAS"
             atlas.columns = atlas.image:getWidth() / atlas.px
             atlas.rows = atlas.image:getHeight() / atlas.py
         end
         for _, atlas in pairs(G.ANIMATION_ATLAS) do
+            atlas.atlas_table = "ANIMATION_ATLAS"
             atlas.columns = atlas.image:getWidth() / atlas.px
             atlas.rows = atlas.image:getHeight() / atlas.py
         end
