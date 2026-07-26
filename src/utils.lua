@@ -2774,7 +2774,7 @@ function SMODS.localize_box(lines, args)
             strikethrough_scale = type(part.control.st) == 'table' and part.control.st.s,
             text_outline = SMODS.get_loc_colour(part.control.O, args.vars.colours),
             text_outline_scale = type(part.control.O) == 'table' and part.control.O.s,
-            font = SMODS.Fonts[part.control.f] or G.FONTS[tonumber(part.control.f)],
+            font = SMODS.Fonts[part.control.f] or G.FONTS[tonumber(part.control.f)] or args.font,
             scale_mod = part.control.s and tonumber(part.control.s) or args.scale or 1,
         }
         local desc_scale = (thunk.font or G.LANG.font).DESCSCALE
