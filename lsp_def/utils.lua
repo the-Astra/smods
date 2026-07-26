@@ -926,7 +926,7 @@ function SMODS.mod_blind_size(mod_blind_size) end
 
 ---Copies a card
 ---@param card Card|table? Card to copy
----@param args CopyCardArgs
+---@param args CopyCardArgs?
 ---@return Card|table
 function SMODS.copy_card(card, args) end
 
