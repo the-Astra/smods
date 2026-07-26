@@ -452,7 +452,7 @@ function SMODS.add_card(t)
     return SMODS.add_to_deck(card, t)
 end
 
-function SMODS.debuff_card(card, debuff, source)
+function SMODS.debuff_card(card, debuff, source, delay)
     debuff = debuff or nil
     source = source and tostring(source) or nil
     if debuff == 'reset' then
@@ -463,6 +463,15 @@ function SMODS.debuff_card(card, debuff, source)
     card.ability.debuff_sources = card.ability.debuff_sources or {}
     card.ability.debuff_sources[source] = debuff
     SMODS.recalc_debuff(card)
+    if delay then
+        card.delay_debuff = true
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                card.delay_debuff = nil   
+                return true
+            end
+        }))
+    end
 end
 
 -- Recalculate whether a card should be debuffed
