@@ -11,6 +11,7 @@ StateSprite = AnimatedSprite:extend()
         (optional) exit_to = [state] |OR [function(state_table, sprite), returning a state],
         (optional) frame_durations = {1: 2, 2:...},     (in Frames according to G.ANIMATION_FPS)
         (optional) default_frame_duration = 1,          (in Frames according to G.ANIMATION_FPS)
+        (optional) FPS = 2,                             (in Frames per second according to G.ANIMATION_FPS, alternative to default_frame_duration)
     }, 
     ...
 }
@@ -120,7 +121,7 @@ function StateSprite:animate()
     if frame_finished then
         self.current_animation.current = SMODS.get_new_frame(self, self.state.frame_order)
         self.current_animation.elapsed = self.current_animation.elapsed + 1
-        self.current_animation.frame_duration = (self.state.frame_durations or {})[self.current_animation.current+1] or self.state.default_frame_duration or 1
+        self.current_animation.frame_duration = (self.state.frame_durations or {})[self.current_animation.current+1] or self.state.default_frame_duration or 1 / (self.state.FPS or self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS
         local _x = self.animation.w * ((self.states_offset.x + self.state.start_pos.x + self.current_animation.current) % self.atlas.columns)
         local _y = self.animation.h * (self.states_offset.y + self.state.start_pos.y + math.floor(self.current_animation.current / self.atlas.columns))
         self.sprite:setViewport(
@@ -153,7 +154,7 @@ function StateSprite:set_sprite_pos(sprite_pos)
         h = self.animation.h,
         elapsed = 0,
         frame_index = 0,
-        frame_duration = (self.state and self.state.frame_durations or {})[1] or self.state and self.state.default_frame_duration or 1
+        frame_duration = (self.state and self.state.frame_durations or {})[1] or self.state and self.state.default_frame_duration or 1 / (self.state.FPS or self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS
     }
 
     self.image_dims = self.image_dims or {}
