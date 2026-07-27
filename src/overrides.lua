@@ -2980,6 +2980,7 @@ end
 
 -- AnimatedSprite : Use obj.sprite_args and allow wrapping / overlapping frames / StateSprite args like flipped_h/v, frame_duration(s) and frame_order.
 function AnimatedSprite:init(X, Y, W, H, new_sprite_atlas, sprite_pos, args)
+	sprite_pos = sprite_pos or {x=0, y=0}
 	self.sprite_args = args or {}
     Sprite.init(self,X, Y, W, H, new_sprite_atlas, sprite_pos)
     self.offset = {x = 0, y = 0}
@@ -3048,7 +3049,7 @@ function AnimatedSprite:set_sprite_pos(sprite_pos)
         w = self.animation.w,
         h = self.animation.h,
 		frame_index = 0,
-		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1
+		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1 / (self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS or 1
 	}
 
     self.image_dims = self.image_dims or {}

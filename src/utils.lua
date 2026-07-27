@@ -452,7 +452,7 @@ function SMODS.add_card(t)
     return SMODS.add_to_deck(card, t)
 end
 
-function SMODS.debuff_card(card, debuff, source)
+function SMODS.debuff_card(card, debuff, source, delay)
     debuff = debuff or nil
     source = source and tostring(source) or nil
     if debuff == 'reset' then
@@ -463,6 +463,15 @@ function SMODS.debuff_card(card, debuff, source)
     card.ability.debuff_sources = card.ability.debuff_sources or {}
     card.ability.debuff_sources[source] = debuff
     SMODS.recalc_debuff(card)
+    if delay then
+        card.delay_debuff = true
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                card.delay_debuff = nil   
+                return true
+            end
+        }))
+    end
 end
 
 -- Recalculate whether a card should be debuffed
@@ -2774,7 +2783,7 @@ function SMODS.localize_box(lines, args)
             strikethrough_scale = type(part.control.st) == 'table' and part.control.st.s,
             text_outline = SMODS.get_loc_colour(part.control.O, args.vars.colours),
             text_outline_scale = type(part.control.O) == 'table' and part.control.O.s,
-            font = SMODS.Fonts[part.control.f] or G.FONTS[tonumber(part.control.f)],
+            font = SMODS.Fonts[part.control.f] or G.FONTS[tonumber(part.control.f)] or args.font,
             scale_mod = part.control.s and tonumber(part.control.s) or args.scale or 1,
         }
         local desc_scale = (thunk.font or G.LANG.font).DESCSCALE
