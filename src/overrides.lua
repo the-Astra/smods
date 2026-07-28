@@ -2998,12 +2998,12 @@ function AnimatedSprite:init(X, Y, W, H, new_sprite_atlas, sprite_pos, args)
 end
 
 function AnimatedSprite:animate()
-    local frame_finished = (math.floor(G.ANIMATION_FPS*(G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
+    local frame_finished = (math.floor((G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
     if frame_finished then
         self.current_animation.current = SMODS.get_new_frame(self, self.sprite_args.frame_order)
-		local frame_duration = (self.sprite_args.frame_durations or {})[self.current_animation.current+1] or self.sprite_args.frame_duration
+		local frame_duration = (self.sprite_args.frame_durations or {})[self.current_animation.current+1] or self.sprite_args.frame_duration or 1
 		local fps = self.sprite_args.FPS or self.atlas.FPS or G.ANIMATION_FPS
-        self.current_animation.frame_duration = (frame_duration or 1) / fps * G.ANIMATION_FPS
+        self.current_animation.frame_duration = frame_duration / fps
         local _x = self.animation.w * ((self.sprite_args.start_pos.x + self.current_animation.current) % self.atlas.columns)
         local _y = self.animation.h * (self.sprite_args.start_pos.y + math.floor(self.current_animation.current / self.atlas.columns))
         self.sprite:setViewport(
@@ -3045,7 +3045,7 @@ function AnimatedSprite:set_sprite_pos(sprite_pos)
         frames= self.sprite_args.frames or self.atlas.frames or 1, current=0,
         w=self.scale.x, h=self.scale.y}
 	
-	local frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration
+	local frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1
 	local fps = self.sprite_args.FPS or self.atlas.FPS or G.ANIMATION_FPS
     self.current_animation = {
         current = 0,
@@ -3053,7 +3053,7 @@ function AnimatedSprite:set_sprite_pos(sprite_pos)
         w = self.animation.w,
         h = self.animation.h,
 		frame_index = 0,
-		frame_duration = (frame_duration or 1) / fps * G.ANIMATION_FPS
+		frame_duration = frame_duration / fps
 	}
 
     self.image_dims = self.image_dims or {}

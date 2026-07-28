@@ -117,13 +117,13 @@ function StateSprite:animate()
             self:set_state(self.state.exit_to)
         end
     end
-    local frame_finished = (math.floor(G.ANIMATION_FPS*(G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
+    local frame_finished = (math.floor((G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
     if frame_finished then
         self.current_animation.current = SMODS.get_new_frame(self, self.state.frame_order)
         self.current_animation.elapsed = self.current_animation.elapsed + 1
-        local frame_duration = (self.state.frame_durations or {})[self.current_animation.current+1] or self.state.default_frame_duration
+        local frame_duration = (self.state.frame_durations or {})[self.current_animation.current+1] or self.state.default_frame_duration or 1
 		local fps = self.state.FPS or self.atlas.FPS or G.ANIMATION_FPS
-        self.current_animation.frame_duration = (frame_duration or 1) / fps * G.ANIMATION_FPS
+        self.current_animation.frame_duration = frame_duration / fps
         local _x = self.animation.w * ((self.states_offset.x + self.state.start_pos.x + self.current_animation.current) % self.atlas.columns)
         local _y = self.animation.h * (self.states_offset.y + self.state.start_pos.y + math.floor(self.current_animation.current / self.atlas.columns))
         self.sprite:setViewport(
@@ -158,7 +158,7 @@ function StateSprite:set_sprite_pos(sprite_pos)
         h = self.animation.h,
         elapsed = 0,
         frame_index = 0,
-        frame_duration = (frame_duration or 1) / fps * G.ANIMATION_FPS
+        frame_duration = frame_duration / fps
     }
 
     self.image_dims = self.image_dims or {}
