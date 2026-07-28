@@ -3001,7 +3001,7 @@ function AnimatedSprite:animate()
     local frame_finished = (math.floor(G.ANIMATION_FPS*(G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
     if frame_finished then
         self.current_animation.current = SMODS.get_new_frame(self, self.sprite_args.frame_order)
-        self.current_animation.frame_duration = (self.sprite_args.frame_durations or {})[self.current_animation.current+1] or self.sprite_args.frame_duration or 1
+        self.current_animation.frame_duration = (self.sprite_args.frame_durations or {})[self.current_animation.current+1] or self.sprite_args.frame_duration or 1 / (self.sprite_args.FPS or self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS
         local _x = self.animation.w * ((self.sprite_args.start_pos.x + self.current_animation.current) % self.atlas.columns)
         local _y = self.animation.h * (self.sprite_args.start_pos.y + math.floor(self.current_animation.current / self.atlas.columns))
         self.sprite:setViewport(
@@ -3049,7 +3049,7 @@ function AnimatedSprite:set_sprite_pos(sprite_pos)
         w = self.animation.w,
         h = self.animation.h,
 		frame_index = 0,
-		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1 / (self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS or 1
+		frame_duration = (self.sprite_args.frame_durations or {})[1] or self.sprite_args.frame_duration or 1 / (self.sprite_args.FPS or self.atlas.FPS or G.ANIMATION_FPS) * G.ANIMATION_FPS
 	}
 
     self.image_dims = self.image_dims or {}
