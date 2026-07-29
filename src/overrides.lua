@@ -2982,6 +2982,11 @@ end
 function AnimatedSprite:init(X, Y, W, H, new_sprite_atlas, sprite_pos, args)
 	sprite_pos = sprite_pos or {x=0, y=0}
 	self.sprite_args = args or {}
+	if new_sprite_atlas.sprite_args then 
+		for arg_key, v in pairs(new_sprite_atlas.sprite_args) do
+			if self.sprite_args[arg_key] == nil then self.sprite_args[arg_key] = v end
+		end
+	end
     Sprite.init(self,X, Y, W, H, new_sprite_atlas, sprite_pos)
     self.offset = {x = 0, y = 0}
 
