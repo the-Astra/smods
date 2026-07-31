@@ -327,6 +327,7 @@ end
 local start_run = Game.start_run
 function Game:start_run(args)
     start_run(self, args)
+    if not G.SETTINGS.tutorial_complete then return end
     if args.savetext then return end
     for _, value in ipairs(SMODS.RunSelectPage.obj_buffer) do
         local page = SMODS.RunSelect.Pages[value]
