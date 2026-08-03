@@ -3386,11 +3386,6 @@ function SMODS.reset_card(card, args)
     args.reset_value = args.reset_value or 0
     args.resetting_card = true
     args.card = card
-    args.reset_message = args.reset_message or {
-        message = localize(args.message_key or 'k_reset'),
-        colour = args.message_colour or G.C.FILTER,
-        delay = args.message_delay,
-    }
     local flags = SMODS.calculate_context(args)
     
     if type(args.operation) == 'function' then
@@ -3398,6 +3393,11 @@ function SMODS.reset_card(card, args)
     else
         args.ref_table[args.ref_value] = args.reset_value
     end
+    args.reset_message = SMODS.merge_defaults(args.reset_message, {
+        message = localize(args.message_key or 'k_reset'),
+        colour = args.message_colour or G.C.FILTER,
+        delay = args.message_delay,
+    })
     if next(args.reset_message) and not args.no_message then
         SMODS.calculate_effect(args.reset_message, card)
     end
