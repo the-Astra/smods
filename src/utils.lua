@@ -4535,7 +4535,7 @@ end
 
 -- Util function to render one card to a .png file (usually saved to the mods folder's parent directory)
 function SMODS.card_to_image(card, scale, filename)
-	if not type(card) == "table" then return end
+	if type(card) ~= "table" then return end
     local key = ((card.config or {}).center or {}).key or "card_to_image"
     scale = scale or G.SETTINGS.GRAPHICS.texture_scaling
 	filename = (filename or key == "j_joker" and "jimbo" or key) .. ".png"
