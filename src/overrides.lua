@@ -3050,6 +3050,7 @@ function AnimatedSprite:draw_self()
 end
 
 function AnimatedSprite:set_sprite_pos(sprite_pos)
+	if not self.sprite_args then return end
     self.animation = {
         x= sprite_pos and sprite_pos.x or 0,
         y= sprite_pos and sprite_pos.y or 0,
