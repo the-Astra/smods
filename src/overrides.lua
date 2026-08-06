@@ -3005,10 +3005,11 @@ function AnimatedSprite:load_sprite_args(args)
 	self.sprite_args.frames = self.sprite_args.frames or self.sprite_args.end_pos and ((self.sprite_args.end_pos.x or self.sprite_args.start_pos.x) - self.sprite_args.start_pos.x + ((self.sprite_args.end_pos.y or self.sprite_args.start_pos.y) - self.sprite_args.start_pos.y) * self.atlas.columns + 1) or self.atlas.frames or 1
 	self.flipped_h = self.sprite_args.flipped_h or false
 	self.flipped_v = self.sprite_args.flipped_v or false
+	self:set_sprite_pos(self.sprite_pos)
 end
 
 function AnimatedSprite:animate()
-	if not self.current_animation.frames then return end
+	if not self.current_animation or not self.current_animation.frames then return end
     local frame_finished = (math.floor((G.TIMERS.REAL - self.offset_seconds) / self.current_animation.frame_duration)) > 0
     if frame_finished then
         self.current_animation.current = SMODS.get_new_frame(self, self.sprite_args.frame_order)
