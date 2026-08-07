@@ -3,7 +3,7 @@
 --- Util Classes
 
 --- Internal class referring args passed as `context` in a SMODS object's `calculate` function.
---- Not all arguments typed here are present in all contexts, see [Calculate Function](https://github.com/Steamodded/smods/wiki/calculate_functions#contexts) for details.
+--- Not all arguments typed here are present in all contexts, see [Calculate Function](https://docs.smods.dev/API%20Documentation/Calculate-Functions#contexts) for details.
 ---@class CalcContext: table
 ---@field cardarea? CardArea|PlayAreas|table The CardArea currently being checked.
 ---@field full_hand? Card[]|table[] All played or selected cards.

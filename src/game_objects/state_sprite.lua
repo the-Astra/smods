@@ -2,7 +2,7 @@ StateSprite = AnimatedSprite:extend()
 
 
 
--- See https://github.com/Steamodded/smods/wiki/Animated-Sprites.md for an Animated/StateSprite guide!
+-- See https://docs.smods.dev/Guides/Animated-Sprites for an Animated/StateSprite guide!
 
 
 
