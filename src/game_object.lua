@@ -4066,12 +4066,18 @@ SMODS.UndiscoveredCompat = {
         text = '^'
     }
 
-
+    
     -------------------------------------------------------------------------------------------------
     ----- API IMPORT Object.Node.Moveable.Sprite.AnimatedSprite.StateSprite
     -------------------------------------------------------------------------------------------------
 
     assert(load(NFS.read(SMODS.path..'src/game_objects/state_sprite.lua'), ('=[SMODS _ "src/game_objects/state_sprite.lua"]')))()
+
+    -------------------------------------------------------------------------------------------------
+    ----- API IMPORT GameObject.SpriteParticle
+    -------------------------------------------------------------------------------------------------
+
+    assert(load(NFS.read(SMODS.path..'src/game_objects/sprite_particles.lua'), ('=[SMODS _ "src/game_objects/sprite_particles.lua"]')))()
 
     -------------------------------------------------------------------------------------------------
     ----- API IMPORT GameObject.DrawStep
