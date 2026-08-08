@@ -1994,6 +1994,12 @@ function SMODS.update_context_flags(context, flags)
         if flags.replace_display_name then context.display_name = flags.replace_display_name end
         if flags.replace_poker_hands then context.poker_hands = flags.replace_poker_hands end
     end
+    if context.scaling_card or context.resetting_card then
+        SMODS.update_context_flags_scaling_resetting(context, flags)
+    end
+end
+
+function SMODS.update_context_flags_scaling_resetting(context, flags)
     if context.scaling_card then
         if not context.block_overrides.value and flags.override_value then
             if type(flags.override_value) == 'table' then
@@ -2015,13 +2021,6 @@ function SMODS.update_context_flags(context, flags)
         if not context.block_overrides.message and flags.override_message then
             context.scaling_message = SMODS.merge_defaults(flags.override_message, context.scaling_message)
         end
-        if flags.post then
-            flags.post.source = flags.scored_card
-            flags.post_effects = flags.post_effects or {}
-            table.insert(flags.post_effects, flags.post)
-        end
-        ---@diagnostic disable-next-line: unbalanced-assignments
-        flags.override_value, flags.override_scalar, flags.override_scalar_value, flags.override_message, flags.post = nil
     end
     if context.resetting_card then
         local override_value = flags.override_value or flags.override_reset_value
@@ -2036,15 +2035,15 @@ function SMODS.update_context_flags(context, flags)
         if not context.block_overrides.message and flags.override_message then
             context.reset_message = SMODS.merge_defaults(flags.override_message, context.reset_message)
         end
-        if flags.post then
-            flags.post.source = flags.scored_card
-            flags.post_effects = flags.post_effects or {}
-            table.insert(flags.post_effects, flags.post)
-        end
-        ---@diagnostic disable-next-line: unbalanced-assignments
-        flags.override_value, flags.override_reset_value, flags.override_message, flags.post = nil
     end
+    if flags.post then
+        flags.post.source = flags.scored_card
+        flags.post_effects = flags.post_effects or {}
+        table.insert(flags.post_effects, flags.post)
+    end
+    flags.override_value, flags.override_scalar, flags.override_scalar_value, flags.override_message, flags.post = nil, nil, nil, nil, nil
 end
+
 
 -- Used to avoid looping getter context calls. Example;
 -- Joker A: Doubles lucky card probabilities
