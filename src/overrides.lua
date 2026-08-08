@@ -3033,11 +3033,13 @@ function AnimatedSprite:animate()
     end
 end
 
+function AnimatedSprite:rescale() end -- Functionality unclear / deprecated, self.scale_mag is not used anymore, instead love.graphics.scale is called with live values. 
+
 function AnimatedSprite:draw_self()
     if not self.states.visible then return end
 
     prep_draw(self, 1)
-    love.graphics.scale(1/self.scale_mag)
+    love.graphics.scale(1/(self.scale.x/self.VT.w), 1/(self.scale.y/self.VT.h))
     love.graphics.setColor(G.C.WHITE)
     love.graphics.draw(
         self.atlas.image, 

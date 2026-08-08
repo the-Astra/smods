@@ -87,8 +87,8 @@ function StateSprite:load_states(states)
     self.a_states = {}
     for key, state in pairs(states) do
         state.start_pos = state.start_pos or {}
-        state.start_pos.x = state.start_pos.x or self.sprite_args.start_pos.x or self.sprite_pos.x or 0
-        state.start_pos.y = state.start_pos.y or self.sprite_args.start_pos.y or self.sprite_pos.y or 0
+        state.start_pos.x = state.start_pos.x or self.sprite_args.start_pos and self.sprite_args.start_pos.x or self.sprite_pos.x or 0
+        state.start_pos.y = state.start_pos.y or self.sprite_args.start_pos and self.sprite_args.start_pos.y or self.sprite_pos.y or 0
         state.end_pos = state.end_pos or {}
         self.sprite_args.end_pos = self.sprite_args.end_pos or {}
         state.end_pos.x = state.end_pos.x or self.sprite_args.end_pos.x
@@ -120,7 +120,6 @@ function StateSprite:load_states(states)
                 state.frame_order = "linear"
             end
         else
-            sendWarnMessage(("StateSprite:load_states() state '%s' had an incorrect frame_order argument '%s'."):format(key, state.frame_order))
             state.frame_order = "linear"
         end
         self.a_states[key] = state
@@ -209,7 +208,7 @@ function StateSprite:draw_self()
     if not self.states.visible then return end
 
     prep_draw(self, 1)
-    love.graphics.scale(1/self.scale_mag)
+    love.graphics.scale(1/(self.scale.x/self.VT.w), 1/(self.scale.y/self.VT.h))
     love.graphics.setColor(G.C.WHITE)
     love.graphics.draw(
         self.atlas.image,
