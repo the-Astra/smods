@@ -2981,14 +2981,15 @@ function SMODS.is_playing_card(card)
 	return card.playing_card or set == "Default" or set == "Enhanced"
 end
 
-function SMODS.pinch_and_remove(card)
+function SMODS.pinch_and_remove(card, args)
+    args = args or {}
     if not SMODS.is_playing_card(card) then
         local flags = SMODS.calculate_context({joker_type_destroyed = true, card = card})
         if flags.no_destroy then card.getting_sliced = nil; return false end
     end
-    play_sound('tarot1')
+    if not args.silent then play_sound('tarot1') end
     card.T.r = -0.2
-    card:juice_up(0.3, 0.4)
+    if not args.no_juice then card:juice_up(0.3, 0.4) end
     card.states.drag.is = true
     card.children.center.pinch.x = true
     G.E_MANAGER:add_event(Event({
@@ -3046,11 +3047,11 @@ function SMODS.destroy_cards(cards, args, ...)
         if args.destroy_func then 
             return args.destroy_func(card, args) ~= false
         elseif args.pinch_anim then
-            return SMODS.pinch_and_remove(card)
+            return SMODS.pinch_and_remove(card, args)
         elseif card.shattered then
-            return card:shatter() ~= false
+            return card:shatter(args) ~= false
         elseif card.destroyed then
-            return card:start_dissolve(args.colours) ~= false
+            return card:start_dissolve(args.colours, args.silent, args.dissolve_time_fac, args.no_juice) ~= false
         end
         return false
     end
