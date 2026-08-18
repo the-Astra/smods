@@ -3065,6 +3065,13 @@ function SMODS.destroy_cards(cards, args, ...)
         elseif card.shattered then
             return card:shatter(args) ~= false
         elseif card.destroyed then
+            SMODS.skip_destroy_calc = args.skip_calc
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    SMODS.skip_destroy_calc = nil
+                    return true
+                end
+            }))
             return card:start_dissolve(args.colours, args.silent, args.dissolve_time_fac, args.no_juice) ~= false
         end
         return false
