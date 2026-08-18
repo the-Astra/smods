@@ -2997,7 +2997,7 @@ end
 
 function SMODS.pinch_and_remove(card, args)
     args = args or {}
-    if not SMODS.is_playing_card(card) then
+    if not SMODS.is_playing_card(card) and not args.skip_calc then
         local flags = SMODS.calculate_context({joker_type_destroyed = true, card = card})
         if flags.no_destroy then card.getting_sliced = nil; return false end
     end
