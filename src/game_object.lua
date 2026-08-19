@@ -510,7 +510,6 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
             end
             self.image = love.graphics.newImage(self.image_data,
                 { mipmaps = true, dpiscale = G.SETTINGS.GRAPHICS.texture_scaling })
-            self.image:setFilter("nearest", "nearest")
             self.columns = self.image:getWidth() / self.px
             self.rows = self.image:getHeight() / self.py
             G[atlas_table_map[self.atlas_table]][self.key_noloc or self.key] = self
