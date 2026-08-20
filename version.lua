@@ -1,1 +1,1 @@
-return "1.0.0~BETA-2019b-STEAMODDED"
+return "1.0.0~BETA-2020a-STEAMODDED"

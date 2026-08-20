@@ -3921,6 +3921,7 @@ function CardArea:handle_card_limit()
         if not G.TAROT_INTERRUPT then
             self.config.card_limits.extra_slots = self:count_property('card_limit')
             self.config.card_limits.total_slots = self.config.card_limits.extra_slots + (self.config.card_limits.base or 0) + (self.config.card_limits.mod or 0)
+            self.config.card_limits.display_slots = math.max(0, self.config.card_limits.total_slots)
             self.config.card_limits.extra_slots_used = self:count_property('extra_slots_used')
         end
         self.config.card_count = #self.cards + self.config.card_limits.extra_slots_used
@@ -3946,9 +3947,7 @@ function CardArea:handle_card_limit()
                     end
                 }))
             elseif G.STATE == G.STATES.SELECTING_HAND and #G.deck.cards > 0 and self.config.card_limits.old_slots < self.config.card_limits.total_slots then
-                if (self.config.card_limits.total_slots - self.config.card_limits.old_slots) > 0 then
-                    G.FUNCS.draw_from_deck_to_hand()
-                end
+                G.FUNCS.draw_from_deck_to_hand()
             end
             if self == G.hand and G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.DRAW_TO_HAND then
                 self.config.card_limits.old_slots = self.config.card_limits.total_slots or 0
@@ -3958,6 +3957,7 @@ function CardArea:handle_card_limit()
     else
         self.config.card_count = #self.cards
         self.config.card_limits.total_slots = (self.config.card_limits.base or 0) + (self.config.card_limits.mod or 0)
+        self.config.card_limits.display_slots = math.max(0, self.config.card_limits.total_slots)
     end
 end
 
