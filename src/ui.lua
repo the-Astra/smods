@@ -376,7 +376,7 @@ function Game:main_menu(change_context)
                     n = G.UIT.T,
                     config = {
                         scale = 0.3,
-                        text = MODDED_VERSION,
+                        text = "Steamodded v" .. MODDED_VERSION,
                         colour = G.C.UI.TEXT_LIGHT
                     }
                 }
@@ -1257,7 +1257,7 @@ function getModtagInfo(mod)
         if mod.load_issues.outdated then tag_message = 'load_failure_o' end
         if mod.load_issues.version_mismatch then
             tag_message = 'load_failure_i'
-            specific_vars = {mod.load_issues.version_mismatch, MODDED_VERSION:gsub('-STEAMODDED', '')}
+            specific_vars = {mod.load_issues.version_mismatch, MODDED_VERSION}
         end
         if mod.load_issues.main_file_not_found then
             tag_message = 'load_failure_m'
