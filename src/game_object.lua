@@ -431,18 +431,41 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
         STATE_ATLAS = "ANIMATION_ATLAS",
     }
 
-    local scalingShader = love.graphics.newShader([[
+    local scalingShader = love.graphics.newShader[[
         extern Image sourceImage;
         extern vec2 dim;
+
+        vec2 neigbours[8] = vec2[8](vec2(-1, -1),vec2(0, -1),vec2(1, -1),vec2(-1, 0),vec2(1, 0),vec2(-1, 1),vec2(0, 1),vec2(1, 1));
+
+        vec4 fixAlpha(Image img, vec2 uv){
+            vec4 result = vec4(0.0);
+            float count = 0.0;
+
+            for (int i = 0; i < 8; i++) {
+                vec2 c = uv + (neigbours[i] * dim);
+                if (c.x < 0 || c.x > 1) continue;
+                if (c.y < 0 || c.y > 1) continue;
+                vec4 d = Texel(img, c);
+                if (d.a == 0.0) continue;
+                result += d;
+                count += 1.0;
+            }
+            result = result / count;
+            result.a = 0.0;
+            return result;
+        }
 
         vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
             vec2 uv = screen_coords / love_ScreenSize.xy;
 
             vec4 pixel = Texel(sourceImage, uv);
+            if (pixel.a == 0.0) {
+                pixel = fixAlpha(sourceImage, uv);
+            }
 
             return pixel;
         }
-    ]])
+    ]]
 
     SMODS.Atlases = {}
     SMODS.Atlas = SMODS.GameObject:extend {
@@ -499,8 +522,12 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
                 love.graphics.setCanvas(canvas)
                 love.graphics.setColor(1,1,1,1)
                 scalingShader:send("sourceImage", image)
+                scalingShader:send("dim", {1/w, 1/h})
                 love.graphics.setShader(scalingShader)
+                local bm, abm = love.graphics.getBlendMode()
+                love.graphics.setBlendMode("replace", "premultiplied")
                 love.graphics.rectangle("fill", 0, 0, nw, nh)
+                love.graphics.setBlendMode(bm, abm)
                 love.graphics.setShader()
                 love.graphics.setCanvas()
                 local imageData2 = canvas:newImageData()
