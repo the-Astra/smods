@@ -730,18 +730,28 @@ function SMODS.RunSelect.Functions.clean_up(early)
     if SMODS.RunSelect.Internals.stake_tower and SMODS.RunSelect.Internals.stake_tower.cards then
         remove_all(SMODS.RunSelect.Internals.stake_tower.cards)
         SMODS.RunSelect.Internals.stake_tower.cards = {}
+    end
+    if SMODS.RunSelect.Internals.stake_tower_holding and SMODS.RunSelect.Internals.stake_tower_holding.cards then
         remove_all(SMODS.RunSelect.Internals.stake_tower_holding.cards)
         SMODS.RunSelect.Internals.stake_tower_holding.cards = {}
     end
     if SMODS.RunSelect.Internals.preview_area and SMODS.RunSelect.Internals.preview_area.cards then
         remove_all(SMODS.RunSelect.Internals.preview_area.cards)
         SMODS.RunSelect.Internals.preview_area.cards = {}
+    end
+    if SMODS.RunSelect.Internals.preview_area_holding and SMODS.RunSelect.Internals.preview_area_holding.cards then
         remove_all(SMODS.RunSelect.Internals.preview_area_holding.cards)
         SMODS.RunSelect.Internals.preview_area_holding.cards = {}
     end
 end
 
 -- Function Hooks
+local exit_overlay = G.FUNCS.exit_overlay_menu
+G.FUNCS.exit_overlay_menu = function()
+  exit_overlay()
+  SMODS.RunSelect.Functions.clean_up()
+end
+
 local card_stop_hover = Card.stop_hover
 function Card:stop_hover()
     if self.params.stake then
