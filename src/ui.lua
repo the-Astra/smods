@@ -3421,15 +3421,22 @@ function G.UIDEF.SMODS_current_stake()
     local stakes = {}
     local applied_stake
     for i, key in ipairs(applied_stakes) do
-        local order = G.P_STAKES[key].order
-        local stake_sprite = get_stake_sprite(order, 0.8)
+        local _stake_center = G.P_STAKES[key]
+        local order = _stake_center.order
         local _stake_desc = {}
-        localize{type = 'descriptions', key = key, set = 'Stake', nodes = _stake_desc}
-        local _full_desc = {}
-        for k, v in ipairs(_stake_desc) do
-            _full_desc[#_full_desc+1] = {n=G.UIT.R, config={align = "cm"}, nodes=v}
+        if _stake_center then
+            local t, res = {}, {}
+            if _stake_center.loc_vars and type(_stake_center.loc_vars) == 'function' then
+            res = _stake_center:loc_vars({}) or {}
+            end
+            t.vars = res.vars or {}
+            t.key = res.key or _stake_center.key
+            t.set = res.set or _stake_center.set
+            localize{type = 'descriptions', key = t.key, set = t.set, nodes = _stake_desc, vars = t.vars}
+            if _stake_center.applied_stakes and #_stake_center.applied_stakes > 0 then _stake_desc[#_stake_desc] = nil end
         end
-        if #_full_desc > 1 then _full_desc[#_full_desc] = nil end
+        local stake_sprite = get_stake_sprite(order, 0.8)
+
         local stake_node = {n=G.UIT.R, config={align = "cl", padding = 0.05}, nodes={
             {n=G.UIT.C, config={align = "cm", padding = 0.1, r=true, colour=G.C.BLACK}, nodes={
                 {n=G.UIT.O, config={object = stake_sprite}}
@@ -3437,7 +3444,7 @@ function G.UIDEF.SMODS_current_stake()
             {n=G.UIT.C, config={align='cm'}, nodes = {
                 {n=G.UIT.C, config={align = "cm", padding = 0.05, colour = get_stake_col(order), r = 0.05, stretch = true, diff = i < #applied_stakes and 1.3 or 2.4}, nodes={
                     {n=G.UIT.R, config={align = "cm", padding = 0.05, colour = adjust_alpha(G.C.WHITE, 0.95), r = 0.05, minw = 5.5, stretch = true, diff = i < #applied_stakes and 1.4 or 2.5}, nodes={
-                        {n=G.UIT.R, config={align = "cm", padding = 0.03, minh = 0.7, minw = 3.8}, nodes=_full_desc}
+                        {n=G.UIT.R, config={align = "cm", padding = 0.03, minh = 0.7, minw = 3.8}, nodes={transparent_multiline_text(_stake_desc)}}
                     }}
                 }}
             }},
