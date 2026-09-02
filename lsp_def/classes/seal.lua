@@ -10,6 +10,7 @@
 ---@field always_scores? boolean Playing cards with this seal always score. May be overridden by `context.modify_scoring_hand` effects.
 ---@field never_scores? boolean Playing cards with this seal never score. Takes priority over `always_scores`. May be overridden by `context.modify_scoring_hand` effects.
 ---@field shatters? boolean Playing cards with this seal use a shatter animation when destroyed.
+---@field attributes? string[]|table<string,true> Array of Attributes this center has. Converted into a dictionary after injection.
 ---@field loc_txt? table|{name: string|string[], text: string[]|string[][], label: string} Contains strings used for displaying text related to this object. 
 ---@field super? SMODS.GameObject|table Parent class. 
 ---@field atlas? string Key to the seal's atlas. 

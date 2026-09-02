@@ -12,6 +12,7 @@
 ---@field boss_colour? table HEX color for the background when playing this Blind. 
 ---@field debuff? table Configures vanilla blind effects related to debuffing, see [SMODS.Blind](https://docs.smods.dev/Game%20Objects/SMODS.Blind#api-methods) Documentation. Ignored if Blind defines `debuff_hand` or `debuff_card`. 
 ---@field ignore_showdown_check? boolean Sets if `in_pool` should be respected regardless of whether a showdown Boss Blind was requested or not. 
+---@field attributes? string[]|table<string,true> Array of Attributes this center has. Converted into a dictionary after injection.
 ---@field vars? table Variables for this Blind's description in the collection. 
 ---@field __call? fun(self: SMODS.Blind|table, o: SMODS.Blind|table): nil|table|SMODS.Blind
 ---@field extend? fun(self: SMODS.Blind|table, o: SMODS.Blind|table): table Primary method of creating a class. 

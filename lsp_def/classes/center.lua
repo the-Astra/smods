@@ -12,6 +12,7 @@
 ---@field no_collection? boolean|fun():boolean Sets whether the card shows up in the collections menu. 
 ---@field loc_txt? table|{name: string|string[], text: string[]|string[][]} Contains strings used for displaying text related to this object. 
 ---@field pools? string[] Array of keys to ObjectTypes this center will be added to.
+---@field attributes? string[]|table<string,true> Array of Attributes this center has. Converted into a dictionary after injection.
 ---@field cost? number Sell cost of this center. 
 ---@field no_pool_flag? string Key to a pool flag defined in `G.GAME.pool_flags`. This center is removed from pools as long as this flag is `true`. 
 ---@field yes_pool_flag? string Key to the pool flag defined in `G.GAME.pool_flags`. This center is removed from pools as long as this flag is `false`. 
