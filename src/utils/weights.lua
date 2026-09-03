@@ -1,7 +1,5 @@
 -- TODO: how do soul objects fit into this system?
 
--- Returns a `key` of the polled object type
----@param args table|{type: string?, attributes: string[]?, pool: string[]?, seed: string?, chance: number?, guaranteed: boolean?}
 function SMODS.poll_object(args)
     args.type = args.type or args.set
     args.types = args.types or args.sets
@@ -121,8 +119,6 @@ function SMODS.poll_object(args)
     return output_key
 end
 
--- Returns the `weight` and `modified_weight` or a given object
----@param args table|{key: string, no_mod: boolean?} 
 function SMODS.get_weight_of_object(obj, opt_weight, args)
     if not obj then return 10, 10 end
     local w = opt_weight or obj.weight or 10
@@ -296,7 +292,6 @@ local function SMODS_WEIGHTS_poll_rarity(pool, args)
     return nil
 end
 
--- Create a table of {key = string, type = label} items to be polled
 function SMODS.create_poll_pool(labels, args)
     local labels_used = {}
     local pool = {}

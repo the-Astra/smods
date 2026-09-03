@@ -980,3 +980,7 @@ function Card.is_suit_shade(card, shade, bypass_debuff) end
 ---@param element? UINode | Node | table | nil | fun(): UINode | Node | table | nil
 ---@return UINode | nil
 function SMODS.process_loc_element(element) end
+
+--- Returns if the current ante would have a showdown boss blind.
+---@return boolean
+function SMODS.is_showdown_ante() end

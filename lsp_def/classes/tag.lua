@@ -26,7 +26,8 @@
 ---@field set_ability? fun(self: SMODS.Tag|table, tag: Tag|table) Sets up initial ability for the tag. Values should be stored in `tag.ability`. 
 ---@field generate_ui? fun(self: SMODS.Tag|table, info_queue: table, tag: Tag|table, desc_nodes: table, specific_vars: table, full_UI_table: table) Provides complex control over the UI display of the tag. See [`generate_ui`](https://docs.smods.dev/API%20Documentation/Localization#generate_ui-advanced) documentation for details. 
 ---@field loc_vars? fun(self: SMODS.Tag|table, info_queue: table, tag: Tag|table): table? Provides simple control over displaying descriptions and tooltips of the tag. See [`loc_vars`](https://docs.smods.dev/API%20Documentation/Localization#loc_vars) documentation for details. 
----@field in_pool? fun(self: SMODS.Tag|table, args: table): nil|boolean, table? Allows configuring if the tag is allowed to spawn. 
+---@field in_pool? fun(self: SMODS.Tag|table, args: table): nil|boolean, table? Allows configuring if the tag is allowed to spawn.
+---@field get_weight? fun(self: SMODS.Tag|table, weight: number, args: table?): number Used for finer control over this tag's weight with the object weights optional feature is enabled. 
 ---@overload fun(self: SMODS.Tag): SMODS.Tag
 SMODS.Tag = setmetatable({}, {
     __call = function(self)
