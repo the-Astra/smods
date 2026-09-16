@@ -567,11 +567,18 @@ function SMODS.RunSelect.Functions.build_preview_areas(key)
             end
         end
     end
+    
+    local selection_limit
+    if type(page_def.selection_limit) == 'function' then
+        selection_limit = page_def:selection_limit() or 1
+    else
+        selection_limit = page_def.selection_limit
+    end
 
-    SMODS.RunSelect.Internals.preview_area = CardArea(15.475, 0, G.CARD_W * (page_def.selection_limit > 1 and 1.5 or 1), G.CARD_H,
-    {card_limit = page_def.preview_size or page_def.selection_limit, type = page_def.area_type or 'title_2', highlight_limit = 0, run_select_deck_preview = page_def.area_type == 'deck'})
+    SMODS.RunSelect.Internals.preview_area = CardArea(15.475, 0, G.CARD_W * (selection_limit > 1 and 1.5 or 1), G.CARD_H,
+    {card_limit = page_def.preview_size or selection_limit, type = page_def.area_type or 'title_2', highlight_limit = 0, run_select_deck_preview = page_def.area_type == 'deck'})
     SMODS.RunSelect.Internals.preview_area_holding = CardArea(15.475+2*G.CARD_W, -2*G.CARD_H, G.CARD_W, G.CARD_H,
-    {card_limit = page_def.preview_size or page_def.selection_limit, type = page_def.area_type or 'title_2', highlight_limit = 0})
+    {card_limit = page_def.preview_size or selection_limit, type = page_def.area_type or 'title_2', highlight_limit = 0})
 end
 
 function SMODS.RunSelect.Functions.update_preview_texts(page_def)
@@ -630,7 +637,15 @@ end
 function SMODS.RunSelect.Functions.populate_preview_ui(key, to_add, silent, _remove)
     if SMODS.config.run_select_performance then silent = true end
     local page_def = SMODS.RunSelect.Pages[key]
-    if page_def.selection_limit == 1 and not _remove then
+    
+    local selection_limit
+    if type(page_def.selection_limit) == 'function' then
+        selection_limit = page_def:selection_limit() or 1
+    else
+        selection_limit = page_def.selection_limit
+    end
+
+    if selection_limit == 1 and not _remove then
         if G.E_MANAGER.queues.run_select then G.E_MANAGER:clear_queue('run_select') end
         remove_all(SMODS.RunSelect.Internals.preview_area.cards)
         SMODS.RunSelect.Internals.preview_area.cards = {}
