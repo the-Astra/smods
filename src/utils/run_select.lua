@@ -859,7 +859,7 @@ function SMODS.RunSelect.Functions.get_selection_limit(page_def)
     if type(page_def.selection_limit) == 'function' then
         return page_def:selection_limit() or 1
     else
-        return page_def.selection_limit
+        return page_def.selection_limit or 1
     end
 end
 
