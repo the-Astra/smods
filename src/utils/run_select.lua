@@ -567,13 +567,8 @@ function SMODS.RunSelect.Functions.build_preview_areas(key)
             end
         end
     end
-    
-    local selection_limit
-    if type(page_def.selection_limit) == 'function' then
-        selection_limit = page_def:selection_limit() or 1
-    else
-        selection_limit = page_def.selection_limit
-    end
+
+    local selection_limit = SMODS.RunSelect.Functions.get_selection_limit(page_def)
 
     SMODS.RunSelect.Internals.preview_area = CardArea(15.475, 0, G.CARD_W * (selection_limit > 1 and 1.5 or 1), G.CARD_H,
     {card_limit = page_def.preview_size or selection_limit, type = page_def.area_type or 'title_2', highlight_limit = 0, run_select_deck_preview = page_def.area_type == 'deck'})
@@ -637,13 +632,8 @@ end
 function SMODS.RunSelect.Functions.populate_preview_ui(key, to_add, silent, _remove)
     if SMODS.config.run_select_performance then silent = true end
     local page_def = SMODS.RunSelect.Pages[key]
-    
-    local selection_limit
-    if type(page_def.selection_limit) == 'function' then
-        selection_limit = page_def:selection_limit() or 1
-    else
-        selection_limit = page_def.selection_limit
-    end
+
+    local selection_limit = SMODS.RunSelect.Functions.get_selection_limit(page_def)
 
     if selection_limit == 1 and not _remove then
         if G.E_MANAGER.queues.run_select then G.E_MANAGER:clear_queue('run_select') end
@@ -863,6 +853,14 @@ function SMODS.RunSelect.Functions.create_info_nodes(info_queue, c, row)
     end
 
     return tooltips
+end
+
+function SMODS.RunSelect.Functions.get_selection_limit(page_def)
+    if type(page_def.selection_limit) == 'function' then
+        return page_def:selection_limit() or 1
+    else
+        return page_def.selection_limit
+    end
 end
 
 

@@ -39,12 +39,7 @@ SMODS.RunSelectPage = SMODS.GameObject:extend({
     handle_choice = function(self, choice, remove)
         SMODS.RunSelect.Setup.choices[self.key] = SMODS.RunSelect.Setup.choices[self.key] or {}
         
-        local selection_limit
-        if type(self.selection_limit) == 'function' then
-            selection_limit = self:selection_limit() or 1
-        else
-            selection_limit = self.selection_limit
-        end
+        local selection_limit = SMODS.RunSelect.Functions.get_selection_limit(self)
 
         if not remove then
             if self.double_click_advance then
@@ -73,12 +68,7 @@ SMODS.RunSelectPage = SMODS.GameObject:extend({
         end
     end,
     set_default = function(self, choice)
-        local selection_limit
-        if type(self.selection_limit) == 'function' then
-            selection_limit = self:selection_limit() or 1
-        else
-            selection_limit = self.selection_limit
-        end
+        local selection_limit = SMODS.RunSelect.Functions.get_selection_limit(self)
 
         if selection_limit > 1 then
             if type(choice) ~= 'table' then choice = {choice} end
@@ -95,12 +85,7 @@ SMODS.RunSelectPage = SMODS.GameObject:extend({
         return localize({set = self.type, key = selection, type = 'name_text'})
     end,
     choose_random = function(self)
-        local selection_limit
-        if type(self.selection_limit) == 'function' then
-            selection_limit = self:selection_limit() or 1
-        else
-            selection_limit = self.selection_limit
-        end
+        local selection_limit = SMODS.RunSelect.Functions.get_selection_limit(self)
 
         local options = {}
         for i=1, #self.pool do
