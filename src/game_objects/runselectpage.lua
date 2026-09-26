@@ -180,17 +180,11 @@ SMODS.RunSelectPage({
     end,
     is_stake_unlocked = function(stake)
         if not stake then return false end
-        local unlocked = true
         local save_data = G.PROFILES[G.SETTINGS.profile].deck_usage[SMODS.RunSelect.Setup.choices.deck_choice] and G.PROFILES[G.SETTINGS.profile].deck_usage[SMODS.RunSelect.Setup.choices.deck_choice].wins_by_key or {}
-        for _,v in ipairs(stake.applied_stakes or {}) do
-            if not G.PROFILES[G.SETTINGS.profile].all_unlocked and (not save_data or (save_data and not save_data[v])) then
-                unlocked = false
-            end
-        end
         if save_data and save_data[stake.key] then
             return true, true
         end
-        return unlocked
+        return SMODS.stake_is_unlocked(stake.key, SMODS.RunSelect.Setup.choices.deck_choice)
     end,
     create_selection_card = function(self, stake_key, card_number, area)
         local card = Card(area.T.x, area.T.y, self.sprite_size.w, self.sprite_size.h, nil, G.P_CENTERS.j_joker, {stake = stake_key})
