@@ -3331,9 +3331,9 @@ end
 
 function SMODS.cleanup_infoqueue_dupes(info_queue)
     local cleaned_queue = {}
-    for _, v in pairs(info_queue) do
+    for _, v in ipairs(info_queue) do
         local already_added = false
-        for _, j in pairs(cleaned_queue) do
+        for _, j in ipairs(cleaned_queue) do
             if v == j then
                 already_added = true
                 break
