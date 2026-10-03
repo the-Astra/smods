@@ -474,7 +474,7 @@ function SMODS.find_card(key, count_debuffed) end
 ---@field silent? true|{edition?:true, seal?:true} Applies edition and/or seal silently
 ---@field immediate? true|{edition?:true, seal?:true} Applies edition and/or seal immediately
 ---@field attributes? string[] Creates a card with these attributes. All other arguments will be passed to SMODS.poll_object
----@field scale? {w?:number, h?:number} Creates a card scaled by this width and height multipliers (each defaults to 1)
+---@field scale? {w?:number, h?:number} Creates a card scaled by these width and height multipliers (each defaults to 1)
 
 ---@param t CreateCard|table
 ---@return Card|table
