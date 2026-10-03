@@ -888,7 +888,7 @@ function SMODS.create_sprite(X, Y, W, H, atlas, pos, sprite_args) end
 function SMODS.is_active_blind(key, ignore_disabled) end
 
 ---Check if `challenge` is unlocked.
----@param challenge SMODS.Challenge
+---@param challenge string|SMODS.Challenge
 ---@param k? number Index of challenge in G.CHALLENGES. Only relevant for challenges defined outside SMODS
 ---@return boolean
 function SMODS.challenge_is_unlocked(challenge, k) end
