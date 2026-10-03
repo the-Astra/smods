@@ -1132,8 +1132,8 @@ function SMODS.calculate_quantum_enhancements(card, effects, context)
 end
 
 function SMODS.has_playing_card_property(card, key)
-    if key == 'should_hide_front' then
-        -- Ignore quantum enhancements for 'should_hide_front'
+    if key == 'replace_base_card' then
+        -- Ignore quantum enhancements for 'replace_base_card'
         if card.ability.set == 'Enhanced' and G.P_CENTERS[card.config.center.key][key] then
             return true
         end
