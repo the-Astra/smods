@@ -1002,3 +1002,19 @@ function SMODS.is_showdown_ante() end
 ---@param no_copy? boolean Skips copying the config values of the center
 ---@return table
 SMODS.get_default_ability_vars = function(center, card, no_copy) end
+
+---Returns the size of the table
+---@param t table
+---@return integer
+function SMODS.table_size(t) end
+
+---Splits a string into multiple lines based on its words
+---@param _string string
+---@param parts integer
+---@return table
+function SMODS.split_string(_string, parts) end
+
+---Checks if the card should display its description even if debuffed
+---@param conf {vars?: table, center?: SMODS.Center|table, card?: Card|table}
+---@return boolean
+function SMODS.should_use_debuffed_description(conf) end

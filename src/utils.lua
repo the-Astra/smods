@@ -4718,7 +4718,7 @@ function SMODS.split_string(_string, parts)
 end
 
 -- card will always override center and that will override vars
-function SMODS.should_use_debuffed_description( conf )
+function SMODS.should_use_debuffed_description(conf)
     local conf = conf or {}
     local vars = conf.vars or {}
     local center = conf.center
