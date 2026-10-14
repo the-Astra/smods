@@ -1132,8 +1132,8 @@ function SMODS.calculate_quantum_enhancements(card, effects, context)
 end
 
 function SMODS.has_playing_card_property(card, key)
-    if key == 'should_hide_front' then
-        -- Ignore quantum enhancements for 'should_hide_front'
+    if key == 'replace_base_card' then
+        -- Ignore quantum enhancements for 'replace_base_card'
         if card.ability.set == 'Enhanced' and G.P_CENTERS[card.config.center.key][key] then
             return true
         end
@@ -2240,11 +2240,21 @@ function SMODS.score_card(card, context)
             percent = percent + percent_delta
         end
 
-        context.main_scoring = true
+        
+        if context.debuffed_calculation then
+            context.debuffed_main_scoring = true
+        else
+            context.main_scoring = true
+        end
         local effects = { eval_card(card, context) }
         SMODS.calculate_quantum_enhancements(card, effects, context)
         context.main_scoring = nil
-        context.individual = true
+        context.debuffed_main_scoring = nil
+        if context.debuffed_calculation then
+            context.debuffed_individual = true
+        else
+            context.individual = true
+        end
         context.other_card = card
 
         if next(effects) then
@@ -2255,11 +2265,18 @@ function SMODS.score_card(card, context)
         local flags = SMODS.trigger_effects(effects, card)
 
         context.individual = nil
+        context.debuffed_individual = nil
+
         if reps[j] == 1 and flags.calculated then
-            context.repetition = true
+            if context.debuffed_calculation then
+                context.debuffed_repetition = true
+            else
+                context.repetition = true
+            end
             context.card_effects = effects
             SMODS.calculate_repetitions(card, context, reps)
             context.repetition = nil
+            context.debuffed_repetition = nil
             context.card_effects = nil
         end
         j = j + (flags.calculated and 1 or #reps)
@@ -2289,6 +2306,12 @@ function SMODS.calculate_main_scoring(context, scoring_hand)
                 }))
                 card_eval_status_text(card, 'debuff')
             end
+            if scoring_hand then
+                if in_scoring then context.cardarea = G.play else context.cardarea = 'unscored' end
+            end
+            context.debuffed_calculation = true
+            SMODS.score_card(card, context)
+            context.debuffed_calculation = nil
         else
             if scoring_hand then
                 if in_scoring then context.cardarea = G.play else context.cardarea = 'unscored' end
@@ -2317,7 +2340,11 @@ function SMODS.calculate_end_of_round_effects(context)
             SMODS.calculate_quantum_enhancements(card, effects, context)
 
             context.playing_card_end_of_round = nil
-            context.individual = true
+            if context.debuffed_calculation then
+                context.debuffed_individual = true
+            else
+                context.individual = true
+            end
             context.other_card = card
             -- context.end_of_round individual calculations
 
@@ -2327,13 +2354,19 @@ function SMODS.calculate_end_of_round_effects(context)
             local flags = SMODS.trigger_effects(effects, card)
 
             context.individual = nil
-            context.repetition = true
+            context.debuffed_individual = nil
+            if context.debuffed_calculation then
+                context.debuffed_repetition = true
+            else
+                context.repetition = true
+            end
             context.card_effects = effects
             if reps[j] == 1 then
                 SMODS.calculate_repetitions(card, context, reps)
             end
 
             context.repetition = nil
+            context.debuffed_repetition = nil
             context.card_effects = nil
             context.other_card = nil
             j = j + (flags.calculated and 1 or #reps)
@@ -2371,6 +2404,9 @@ function SMODS.calculate_destroying_cards(context, cards_destroyed, scoring_hand
         end
         local flags = SMODS.calculate_context(context)
         if flags.remove then destroyed = true end
+        if type(flags.remove) == "table" then
+            card.SMODS_destroy_args = flags.remove
+        end
 
         -- TARGET: card destroyed
 
@@ -2658,7 +2694,11 @@ function Card.selectable_from_pack(card, pack)
     local select_area, can_also_use = SMODS.card_select_area(card, pack)
     if select_area then
         if type(select_area) == 'table' then
-            if select_area[card.ability.set] then return select_area[card.ability.set] else return false end
+            if select_area[card.ability.set] then 
+                return select_area[card.ability.set], can_also_use
+            else
+                return false, can_also_use
+            end
         end
         return select_area, can_also_use
     end
@@ -3057,7 +3097,8 @@ function SMODS.destroy_cards(cards, args, ...)
     local playing_cards = {}
     local queued_for_destruction = {}
     for _, card in ipairs(cards) do
-        if args.bypass_eternal or not SMODS.is_eternal(card, {destroy_cards = true}) then
+        local card_args = card.SMODS_destroy_args or {}
+        if args.bypass_eternal or card_args.bypass_eternal or not SMODS.is_eternal(card, {destroy_cards = true}) then
             card.getting_sliced = true
             table.insert(queued_for_destruction, card)
             if SMODS.shatters(card) then
@@ -3066,7 +3107,7 @@ function SMODS.destroy_cards(cards, args, ...)
             else
                 card.destroyed = true
             end
-            if card.base.name then
+            if SMODS.is_playing_card(card) then
                 playing_cards[#playing_cards + 1] = card
             end
         end
@@ -3076,7 +3117,7 @@ function SMODS.destroy_cards(cards, args, ...)
 
     if next(playing_cards) then SMODS.calculate_context({scoring_hand = cards, remove_playing_cards = true, removed = playing_cards}) end
 
-    local destroy_func = function (card, args)
+    local destroy_func = function(card, args)
         if not card.getting_sliced then return false end
         if args.destroy_func then 
             return args.destroy_func(card, args) ~= false
@@ -3098,6 +3139,7 @@ function SMODS.destroy_cards(cards, args, ...)
     end
 
     for i, card in ipairs(queued_for_destruction) do
+        local args = SMODS.merge_defaults(card.SMODS_destroy_args or {}, args)
         if args.immediate then
             destroy_func(card, args)
         else
@@ -3110,6 +3152,7 @@ function SMODS.destroy_cards(cards, args, ...)
                 end
             }))
         end
+        card.SMODS_destroy_args = nil
     end
     return queued_for_destruction
 end
@@ -3298,6 +3341,7 @@ local game_start_run = Game.start_run
 function Game:start_run(args)
     game_start_run(self, args)
     G.SCORE_DISPLAY_QUEUE = nil
+    G.BLIND_SIZE_DISPLAY_QUEUE = nil
     G.E_MANAGER:add_event(Event({
         trigger = 'immediate',
         func = function()
@@ -3525,6 +3569,7 @@ end
 
 function SMODS.challenge_is_unlocked(challenge, k)
     local challenge_unlocked
+    challenge = type(challenge) == "string" and SMODS.Challenges[challenge] or challenge or {}
     if type(challenge.unlocked) == 'function' then
         challenge_unlocked = challenge:unlocked()
     elseif type(challenge.unlocked) == 'boolean' then
@@ -4668,4 +4713,21 @@ function SMODS.split_string(_string, parts)
     end
 
     return text_output
+end
+
+-- card will always override center and that will override vars
+function SMODS.should_use_debuffed_description( conf )
+    local conf = conf or {}
+    local vars = conf.vars or {}
+    local center = conf.center
+    local card = conf.card
+    if card then 
+        center = card.config.center
+    end
+    if center then 
+        vars = center.loc_vars and type(center.loc_vars) == 'function' and 
+                center:loc_vars({}, card) or {}
+    end
+    vars = vars or {}
+    return not vars.no_debuffed_description and not (vars.vars or {}).no_debuffed_description
 end

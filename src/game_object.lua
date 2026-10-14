@@ -575,12 +575,12 @@ Set `prefix_config.key = false` on your object instead.]]):format(obj.key), obj.
     function Game:set_render_settings()
         local ret = game_set_render_settings(self)
         for _, atlas in pairs(G.ASSET_ATLAS) do
-            atlas.atlas_table = "ASSET_ATLAS"
+            atlas.atlas_table = atlas.atlas_table or "ASSET_ATLAS"
             atlas.columns = atlas.image:getWidth() / atlas.px
             atlas.rows = atlas.image:getHeight() / atlas.py
         end
         for _, atlas in pairs(G.ANIMATION_ATLAS) do
-            atlas.atlas_table = "ANIMATION_ATLAS"
+            atlas.atlas_table = atlas.atlas_table or "ANIMATION_ATLAS"
             atlas.columns = atlas.image:getWidth() / atlas.px
             atlas.rows = atlas.image:getHeight() / atlas.py
         end
@@ -2678,9 +2678,6 @@ SMODS.UndiscoveredCompat = {
                 for i, p in ipairs(self.palettes) do
                     if p.loc_txt then
                         SMODS.process_loc_text(G.localization.misc.collab_palettes[self.key], i..'', p.loc_txt)
-                    elseif G.localization.misc.collab_palettes[self.key][i..''] then
-                    else
-                        G.localization.misc.collab_palettes[self.key][i..''] = ({ lc = true, hc = true, def = true })[p.key] and localize('b_deckskins_'..p.key) or p.key
                     end
                 end
             else
@@ -2693,11 +2690,15 @@ SMODS.UndiscoveredCompat = {
             end
 
             if not self.loc_txt then
-                G.localization.misc.collabs[self.suit][self.suit_index .. ''] = G.localization.misc.collabs[self.suit][self.suit_index .. ''] or self.key
+                G.localization.misc.collabs[self.suit][self.suit_index .. ''] = G.localization.misc.collabs[self.suit]
+                [self.suit_index .. ''] or self.key
+                G.localization.misc.collabs[self.suit][self.key] = G.localization.misc.collabs[self.suit]
+                [self.suit_index .. ''] or self.key
                 return
             end
 
             SMODS.process_loc_text(G.localization.misc.collabs[self.suit], self.suit_index..'', self.loc_txt)
+            SMODS.process_loc_text(G.localization.misc.collabs[self.suit], self.key..'', self.loc_txt)
         end,
         register = function(self)
             if self.registered then
@@ -2779,9 +2780,11 @@ SMODS.UndiscoveredCompat = {
                 key = G.COLLABS.options[suit][key]
             end
 
+            local prototype = SMODS.DeckSkins[key]
+
             local conv_palette_loc_options = {}
-            for k, v in pairs(G.localization.misc.collab_palettes[key]) do
-                conv_palette_loc_options[tonumber(k)] = v
+            for i, p in ipairs(prototype.palettes) do
+                conv_palette_loc_options[i] = G.localization.misc.collab_palettes[key][i] or ({ lc = true, hc = true, def = true })[p.key] and localize('b_deckskins_'..p.key) or p.key
             end
 
             return conv_palette_loc_options
@@ -3228,6 +3231,46 @@ SMODS.UndiscoveredCompat = {
             desc_nodes.background_colour = res.background_colour
         end
     }
+
+    function SMODS.create_tag(args)
+        args = args or {}
+        if not args.key then
+            local tag_pool = get_current_pool('Tag')
+            args.key = pseudorandom_element(tag_pool, args.seed or 'smods_create_tag')
+            local it = 0
+            while args.key == 'UNAVAILABLE' do
+                it = it + 1
+                args.key = pseudorandom_element(tag_pool, args.seed or 'smods_create_tag'..it)
+            end
+        end 
+
+        local tag = Tag(args.key, args.collection, args.blind_type)
+
+        G.E_MANAGER:add_event(Event({
+            trigger = args.immediate and 'immediate' or 'after', delay = args.immediate and 0 or 0.4,
+            blockable = not args.immediate,
+            func = (function()
+                add_tag(tag)
+                return true
+            end)
+        }))
+        if not args.silent then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    if args.sound and type(args.sound) == 'function' then
+                        args.sound()
+                    else
+                        play_sound('generic1', 0.9 + math.random()*0.1, 0.8)
+                        play_sound('holo1', 1.2 + math.random()*0.1, 0.4)
+                    end
+                    return true
+                end
+            }))
+        end
+        
+        return tag
+    end
+
 
     -------------------------------------------------------------------------------------------------
     ----- API CODE GameObject.Sticker
@@ -4171,6 +4214,12 @@ SMODS.UndiscoveredCompat = {
     -------------------------------------------------------------------------------------------------
 
     assert(load(SMODS.NFS.read(SMODS.path..'src/game_objects/runselectpage.lua'), ('=[SMODS _ "src/game_objects/runselectpage.lua"]')))()
+
+    -------------------------------------------------------------------------------------------------
+    ----- API CODE GameObject Prototype Utils
+    -------------------------------------------------------------------------------------------------
+
+    assert(load(SMODS.NFS.read(SMODS.path..'src/utils/prototypes.lua'), ('=[SMODS _ "src/utils/prototypes.lua"]')))()
 
     -------------------------------------------------------------------------------------------------
     ----- INTERNAL API CODE GameObject._Loc_Post
