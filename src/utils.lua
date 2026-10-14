@@ -4728,7 +4728,7 @@ function SMODS.should_use_debuffed_description(conf)
     end
     if center then 
         vars = center.loc_vars and type(center.loc_vars) == 'function' and 
-                center:loc_vars({}, card) or {}
+                center:loc_vars({}, card or (center.create_fake_card and center:create_fake_card())) or {}
     end
     vars = vars or {}
     return not vars.no_debuffed_description and not (vars.vars or {}).no_debuffed_description
