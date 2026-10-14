@@ -820,23 +820,29 @@ end
 function SMODS.RunSelect.Functions.grab_tooltips(set, key)
     local info_queue = {}
     local loc_target = G.localization.descriptions[set][key]
-    for _, lines in ipairs(loc_target.text_parsed) do
-        for _, part in ipairs(lines) do
-            if part.control and part.control.T then
-                info_queue[#info_queue + 1] = G.P_CENTERS[part.control.T] or G.P_TAGS[part.control.T] or {
+    local add_info_queue = function (part)
+        if part.control and part.control.T then
+            local already_added = false
+            for _, v in ipairs(info_queue) do
+                if v == G.P_CENTERS[part.control.T] or v == G.P_TAGS[part.control.T] then
+                    already_added = true
+                    break
+                end
+            end
+            if not already_added then
+                info_queue[#info_queue+1] = G.P_CENTERS[part.control.T] or G.P_TAGS[part.control.T] or {
                     set = part.control.T_set or 'Other',
                     key = part.control.T,
                     vars = part.control.T_vars and parse_tooltip_vars(part.control.T_vars) or {}
                 }
             end
+        end
+    end
+    for _, lines in ipairs(loc_target.text_parsed) do
+        for _, part in ipairs(lines) do
+            add_info_queue(part)
             for _, multibox_part in ipairs(part) do
-                if multibox_part.control and multibox_part.control.T then
-                    info_queue[#info_queue + 1] = G.P_CENTERS[multibox_part.control.T] or G.P_TAGS[multibox_part.control.T] or {
-                        set = multibox_part.control.T_set or 'Other',
-                        key = multibox_part.control.T,
-                        vars = multibox_part.control.T_vars and parse_tooltip_vars(multibox_part.control.T_vars) or {}
-                    }
-                end
+                add_info_queue(multibox_part)
             end
         end
     end
