@@ -4681,6 +4681,8 @@ end
 
 assert(load(SMODS.NFS.read(SMODS.path..'src/utils/run_select.lua'), ('=[SMODS _ "src/utils/run_select.lua"]')))()
 
+-------------------------------------------------------------------------------------------------
+
 function SMODS.table_size(t)
     local size = 0
     for _,_ in pairs(t) do
