@@ -4717,6 +4717,19 @@ function SMODS.split_string(_string, parts)
     return text_output
 end
 
+---@param config table? table that contains config to be parsed. `default` may be passed to properly assign default value
+---@param key_tables table? table that contains list of keys and that order determines the default order if no key is provided
+function SMODS.parse_ui_config_table(config, key_tables)
+    if not config or not type(config) == 'table' or not next(config) then return end -- if config is empty
+    if not key_tables or not type(key_tables) == 'table' or not next(key_tables) then return end -- if key_tables is empty
+    local defaults = config.default or config[1] or config[key_tables[1]]
+    local return_table = {}
+    for index, key in ipairs(key_tables) do
+        return_table[key] = config[key] or config[index] or defaults
+    end
+    return return_table
+end
+
 -- card will always override center and that will override vars
 function SMODS.should_use_debuffed_description(conf)
     local conf = conf or {}
