@@ -2855,7 +2855,7 @@ function Card:quantum_set_ability(center)
     end
 
     self.ARGS.smods_quantum_ability = self.ARGS.smods_quantum_ability or {}
-    local new_ability = SMODS.merge_defaults(SMODS.get_default_ability_vars(self, center, true), self.ARGS.smods_quantum_ability)
+    local new_ability = SMODS.merge_defaults(self.ARGS.smods_quantum_ability, SMODS.get_default_ability_vars(center, self, true))
     
     self.ability = self.ability or {}
     new_ability.extra_value = nil
