@@ -2808,8 +2808,6 @@ SMODS.get_default_ability_vars = function(center, card, no_copy)
 		burnt_hand = center.name == 'Loyalty Card' and 0 or nil,
 		loyalty_remaining = center.name == 'Loyalty Card' and (center.config.extra or {}).every or nil,
         hands_played_at_create = G.GAME and G.GAME.hands_played or 0,
-		
-		bonus = (card.ability.bonus or 0) + (center.config.bonus or 0)
 	}
 
 	if not no_copy then
