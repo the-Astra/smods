@@ -3134,7 +3134,7 @@ end
 function create_UIBox_your_collection_decks()
 	key = "deck_choice"
 	local page_def = SMODS.RunSelect.Pages[key]
-    SMODS.RunSelect.Setup.choices[key] = SMODS.RunSelect.Setup.choices[key] or page_def:set_default(G.PROFILES[G.SETTINGS.profile].last_choices[key])
+    --SMODS.RunSelect.Setup.choices[key] = SMODS.RunSelect.Setup.choices[key] or page_def:set_default(G.PROFILES[G.SETTINGS.profile].last_choices[key])
     SMODS.RunSelect.Functions.build_selection_areas(key)
 
 	local pool = SMODS.collection_pool(G.P_CENTER_POOLS.Back)
